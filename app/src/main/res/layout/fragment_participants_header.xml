@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:fitsSystemWindows="true"
+    >
+
+    <View
+        android:id="@+id/v_participants__header__top_border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wire__divider__height__thin"
+        android:background="@color/text__secondary_light__40"
+        />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <com.waz.zclient.ui.views.e2ee.ShieldView
+            android:id="@+id/sv__otr__verified_shield"
+            android:layout_width="@dimen/wire__icon_button__diameter"
+            android:layout_height="@dimen/wire__icon_button__diameter"
+            android:layout_marginLeft="@dimen/wire__padding__big"
+            android:layout_marginTop="@dimen/wire__padding__big"
+            android:paddingTop="@dimen/wire__otr__shield__padding__top"
+            android:paddingLeft="@dimen/wire__otr__shield__padding__left"
+            android:paddingRight="@dimen/wire__otr__shield__padding__right"
+            android:paddingBottom="@dimen/wire__otr__shield__padding__bottom"
+            app:shieldVerified="true"
+            />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+
+                    <com.waz.zclient.ui.text.TypefaceTextView
+                        android:id="@+id/ttv__participants__header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/participants__header__input_field__layout_margin"
+                        android:layout_marginLeft="@dimen/participants__header__input_field__layout_margin"
+                        android:padding="@dimen/participants__header__input_field__padding"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        app:font="@string/wire__typeface__medium"
+                        style="?userHeader"
+                        />
+
+                    <com.waz.zclient.ui.text.TypefaceActionEditText
+                        android:id="@+id/taet__participants__header__editable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/participants__header__input_field__layout_margin"
+                        android:layout_marginTop="@dimen/participants__header__input_field__layout_margin"
+                        android:alpha="@dimen/participants__header__input_field__alpha"
+                        android:freezesText="true"
+                        android:gravity="center_vertical"
+                        android:hint="@string/group_name"
+                        android:imeOptions="actionDone"
+                        android:inputType="textFilter|textMultiLine|textNoSuggestions"
+                        android:maxLength="@integer/participants__header__max_length"
+                        android:maxLines="3"
+                        android:padding="@dimen/participants__header__input_field__padding"
+                        android:singleLine="false"
+                        android:textColorHint="@color/text__secondary_light"
+                        app:font="@string/wire__typeface__medium"
+                        style="?userEditText"
+                        />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll__single_participants__real_name__container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/wire__padding__small"
+                    android:layout_marginLeft="@dimen/participants__subheader__margin_left"
+                    android:layout_marginRight="@dimen/participants__subheader__margin_right"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/participants__subheader__padding"
+                    android:paddingRight="@dimen/participants__subheader__padding"
+                    >
+
+                    <com.waz.zclient.ui.text.TypefaceTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:textAllCaps="true"
+                        android:singleLine="true"
+                        android:textColor="@color/text__secondary_light"
+                        android:textSize="@dimen/participants__subheader__font_size__one_to_one"
+                        app:font="@string/wire__typeface__light"
+                        />
+
+                    <com.waz.zclient.ui.text.GlyphTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text__secondary_light"
+                        android:textSize="@dimen/participants__subheader__font_size__one_to_one"
+                        android:text="@string/glyph__addressbook"
+                        android:paddingLeft="@dimen/participants__subheader__padding"
+                        />
+
+                </LinearLayout>
+
+                <com.waz.zclient.ui.text.TypefaceTextView
+                    android:id="@+id/ttv__participants__sub_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/wire__padding__regular"
+                    android:layout_marginLeft="@dimen/wire__padding__big"
+                    android:layout_marginRight="@dimen/wire__padding__big"
+                    android:layout_gravity="left"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:textAllCaps="true"
+                    android:singleLine="true"
+                    app:font="@string/wire__typeface__light"
+                    style="?userSubHeader"
+                    />
+
+            </LinearLayout>
+
+            <!-- Pen icon-->
+            <com.waz.zclient.ui.text.GlyphTextView
+                android:id="@+id/gtv__participants_header__pen_icon"
+                android:layout_width="@dimen/wire__icon_button__diameter"
+                android:layout_height="@dimen/wire__icon_button__diameter"
+                android:layout_marginRight="@dimen/wire__padding__small"
+                android:layout_marginTop="@dimen/wire__padding__big"
+                android:layout_gravity="top|right"
+                android:clickable="false"
+                android:text="@string/glyph__edit"
+                android:gravity="center"
+                style="?iconButton"
+                />
+
+        </FrameLayout>
+
+        <com.waz.zclient.ui.text.GlyphTextView
+            android:id="@+id/gtv__participants__close"
+            android:layout_width="@dimen/wire__icon_button__diameter"
+            android:layout_height="@dimen/wire__icon_button__diameter"
+            android:layout_marginTop="@dimen/wire__padding__big"
+            android:layout_marginRight="@dimen/wire__padding__regular"
+            android:layout_gravity="top|right"
+            android:text="@string/glyph__close"
+            android:gravity="center"
+            style="?attr/smallIconButton"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/v_participants__header__bottom_border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wire__divider__height__thin"
+        android:layout_gravity="bottom"
+        android:background="@color/text__secondary_light__40"
+        />
+
+</FrameLayout>

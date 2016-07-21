@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             style="?attr/wireBackground"
+    >
+
+    <LinearLayout
+        android:id="@+id/ll__connect_request__main_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="vertical"
+        >
+
+        <include layout="@layout/rl__participants__header" />
+
+        <com.waz.zclient.views.images.ImageAssetImageView
+            android:id="@+id/iaiv__pending_connect"
+            android:layout_width="@dimen/profile__image__width"
+            android:layout_height="@dimen/profile__image__height"
+            android:layout_marginBottom="@dimen/wire__padding__regular"
+            android:layout_marginTop="@dimen/wire__padding__big"
+            android:layout_gravity="bottom|center_horizontal"
+            />
+
+        <com.waz.zclient.pages.main.connect.views.CommonUsersView
+            android:id="@+id/ll__send_connect_request__common_users"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/wire__padding__regular"
+            android:layout_marginBottom="@dimen/wire__padding__small"
+            android:paddingLeft="@dimen/wire__padding__big"
+            android:paddingRight="@dimen/wire__text_size__big"
+            />
+
+
+        <LinearLayout
+            android:id="@+id/ll__connect_request__accept_menu"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/connect_request__footer_menu__height"
+            android:layout_marginBottom="@dimen/connect_request__footer_menu__padding_bottom"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:paddingRight="@dimen/wire__padding__big"
+            android:paddingLeft="@dimen/wire__padding__big"
+            android:orientation="horizontal"
+            >
+
+            <com.waz.zclient.ui.views.ZetaButton
+                android:id="@+id/zb__connect_request__ignore_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/framework_confirmation_menu_button_height"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/connect_request__common_users__chathead__vertical_padding"
+                android:gravity="center"
+                android:text="@string/connect_request__ignore_button__text"
+                app:font="@string/wire__typeface__light"
+                android:textAllCaps="true"
+                android:textSize="@dimen/wire__text_size__small"
+                android:textColor="@color/text__primary_light"
+                />
+
+            <com.waz.zclient.ui.views.ZetaButton
+                android:id="@+id/zb__connect_request__accept_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/framework_confirmation_menu_button_height"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/connect_request__common_users__chathead__vertical_padding"
+                android:gravity="center"
+                android:text="@string/send_connect_request__connect_button__text"
+                app:font="@string/wire__typeface__light"
+                android:textAllCaps="true"
+                android:textSize="@dimen/wire__text_size__small"
+                android:textColor="@color/text__primary_dark"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/v__connect_request__separator_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/people_picker__border_line__height"
+        android:layout_gravity="top"
+        android:layout_marginRight="@dimen/connect_request__separator__padding_horizontal"
+        android:layout_marginLeft="@dimen/connect_request__separator__padding_horizontal"
+        android:background="@color/text__secondary_light__40"
+        />
+
+</FrameLayout>

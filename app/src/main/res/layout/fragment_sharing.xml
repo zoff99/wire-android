@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:clickable="true"
+    >
+
+    <com.waz.zclient.views.images.ImageAssetView
+        android:id="@+id/iv__image_sharing__preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:background="@color/black"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@color/framework_confirmation_menu_background_color"
+        >
+
+        <com.waz.zclient.ui.text.TypefaceTextView
+            android:id="@+id/ttv__image_sharing__title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sharing__image_preview__title__height"
+            android:gravity="center"
+            android:textColor="@color/sharing__image_preview__title__color"
+            android:textSize="@dimen/sharing__image_preview__title__fontsize"
+            app:font="@string/sharing__image_preview__title__font"
+            />
+
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="@dimen/framework__general__right_padding"
+        android:background="@color/framework_confirmation_menu_background_color"
+        >
+
+        <com.waz.zclient.ui.views.ZetaButton
+            android:id="@+id/negative"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/framework_confirmation_menu_button_height"
+            android:layout_marginBottom="@dimen/framework_confirmation_menu_button_padding_bottom"
+            android:layout_marginRight="@dimen/framework_confirmation_menu_button_space_between"
+            android:layout_marginTop="@dimen/framework_confirmation_menu_button_padding_top"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:minHeight="@dimen/touch_target_buttons"
+            android:minWidth="@dimen/touch_target_buttons"
+            android:textColor="@color/framework_confirmation_menu_button_font_color"
+            android:textSize="@dimen/wire__text_size__small"
+            android:text="@string/confirmation_menu__cancel"
+            app:font="@string/wire__typeface__light"
+            />
+
+
+        <com.waz.zclient.ui.views.ZetaButton
+            android:id="@+id/positive"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/framework_confirmation_menu_button_height"
+            android:layout_marginBottom="@dimen/framework_confirmation_menu_button_padding_bottom"
+            android:layout_marginLeft="@dimen/framework_confirmation_menu_button_space_between"
+            android:layout_marginTop="@dimen/framework_confirmation_menu_button_padding_top"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:minHeight="@dimen/touch_target_buttons"
+            android:minWidth="@dimen/touch_target_buttons"
+            android:textColor="@color/text__primary_dark"
+            android:textSize="@dimen/wire__text_size__small"
+            android:text="@string/sharing__image_preview__confirm_action"
+            app:font="@string/wire__typeface__light"
+            />
+    </LinearLayout>
+
+</FrameLayout>

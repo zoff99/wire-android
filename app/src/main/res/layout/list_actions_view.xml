@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Top border -->
+    <View
+        android:id="@+id/v_conversation_list_bottom_border"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/people_picker__border_line__height"
+        android:layout_gravity="top"
+        android:background="@color/separator_dark"
+        />
+
+    <com.waz.zclient.ui.text.GlyphTextView
+        android:id="@+id/gtv__list_actions__avatar"
+        android:layout_width="@dimen/conversation_list__action_icon__size"
+        android:layout_height="@dimen/conversation_list__action_icon__size"
+        android:layout_marginLeft="@dimen/wire__padding__18"
+        android:layout_gravity="left|center_vertical"
+        android:text="@string/glyph__profile"
+        android:textColor="@color/text__primary_dark"
+        android:textSize="@dimen/wire__icon_button__text_size"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/tv__list_action_contact_label"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|center_vertical"
+        android:paddingLeft="@dimen/conversation_list__action_label__padding_left"
+        android:gravity="left|center_vertical"
+        android:text="@string/conversation_list__label_action__contacts"
+        android:textSize="@dimen/wire__text_size__small"
+        android:textColor="@color/text__primary_dark"
+        />
+
+    <com.waz.zclient.ui.text.GlyphTextView
+        android:id="@+id/gtv__list_actions__settings"
+        android:layout_width="@dimen/conversation_list__action_icon__size__big"
+        android:layout_height="@dimen/conversation_list__action_icon__size__big"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/wire__padding__small"
+        android:text="@string/glyph__settings"
+        android:textSize="@dimen/wire__icon_button__text_size"
+        android:textColor="@color/text__primary_dark"
+        android:gravity="center"
+        />
+
+</merge>

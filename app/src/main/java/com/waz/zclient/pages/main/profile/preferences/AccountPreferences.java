@@ -1,0 +1,401 @@
+/**
+ * Wire
+ * Copyright (C) 2016 Wire Swiss GmbH
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.waz.zclient.pages.main.profile.preferences;
+
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceCategory;
+import android.text.TextUtils;
+import com.waz.api.InitListener;
+import com.waz.api.Self;
+import com.waz.zclient.R;
+import com.waz.zclient.controllers.accentcolor.AccentColorObserver;
+import com.waz.zclient.controllers.tracking.events.profile.ResetPassword;
+import com.waz.zclient.controllers.tracking.events.profile.SignOut;
+import com.waz.zclient.core.controllers.tracking.events.session.LoggedOutEvent;
+import com.waz.zclient.core.controllers.tracking.events.settings.ChangedThemeEvent;
+import com.waz.zclient.core.controllers.tracking.events.Event;
+import com.waz.zclient.core.stores.profile.ProfileStoreObserver;
+import com.waz.zclient.pages.BasePreferenceFragment;
+import com.waz.zclient.pages.main.profile.camera.CameraContext;
+import com.waz.zclient.pages.main.profile.preferences.dialogs.AccentColorPreferenceDialogFragment;
+import com.waz.zclient.pages.main.profile.preferences.dialogs.AddEmailAndPasswordPreferenceDialogFragment;
+import com.waz.zclient.pages.main.profile.preferences.dialogs.AddPhoneNumberPreferenceDialogFragment;
+import com.waz.zclient.pages.main.profile.preferences.dialogs.ChangeEmailPreferenceDialogFragment;
+import com.waz.zclient.pages.main.profile.preferences.dialogs.VerifyEmailPreferenceFragment;
+import com.waz.zclient.pages.main.profile.preferences.dialogs.VerifyPhoneNumberPreferenceFragment;
+import com.waz.zclient.ui.utils.TextViewUtils;
+import com.waz.zclient.utils.LayoutSpec;
+import com.waz.zclient.utils.ViewUtils;
+import net.xpece.android.support.preference.EditTextPreference;
+import net.xpece.android.support.preference.SwitchPreference;
+
+public class AccountPreferences extends BasePreferenceFragment<AccountPreferences.Container> implements ProfileStoreObserver,
+                                                                                                        SharedPreferences.OnSharedPreferenceChangeListener,
+                                                                                                        VerifyPhoneNumberPreferenceFragment.Container,
+                                                                                                        VerifyEmailPreferenceFragment.Container,
+                                                                                                        AddEmailAndPasswordPreferenceDialogFragment.Container,
+                                                                                                        ChangeEmailPreferenceDialogFragment.Container,
+                                                                                                        AddPhoneNumberPreferenceDialogFragment.Container,
+                                                                                                        AccentColorObserver {
+
+    public static final String TAG = AccountPreferences.class.getName();
+    private EditTextPreference namePreference;
+    private Preference phonePreference;
+    private Preference emailPreference;
+    private Preference signOutPreference;
+    private Preference deletePreference;
+    private Preference resetPasswordPreference;
+    private PicturePreference picturePreference;
+    private ColorPreference colorPreference;
+    private SwitchPreference themePreference;
+
+    public static AccountPreferences newInstance(String rootKey, Bundle extras) {
+        AccountPreferences f = new AccountPreferences();
+        Bundle args = new Bundle(extras);
+        args.putString(ARG_PREFERENCE_ROOT, rootKey);
+        f.setArguments(args);
+        return f;
+    }
+
+    @Override
+    public void onCreatePreferences2(Bundle savedInstanceState, String rootKey) {
+        super.onCreatePreferences2(savedInstanceState, rootKey);
+        addPreferencesFromResource(R.xml.preferences_account);
+        namePreference = (EditTextPreference) findPreference(getString(R.string.pref_account_name_key));
+        namePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                final String newName = (String) newValue;
+                if (TextUtils.isEmpty(newName)) {
+                    return false;
+                }
+                getStoreFactory().getProfileStore().setMyName(newName.trim());
+                return false;
+            }
+        });
+        phonePreference = findPreference(getString(R.string.pref_account_phone_key));
+        phonePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final CharSequence phoneNumber = preference.getTitle();
+                if (TextUtils.isEmpty(phoneNumber)) {
+                    addPhoneNumber();
+                } else {
+                    changePhoneNumber(String.valueOf(phoneNumber));
+                }
+                return true;
+            }
+        });
+        emailPreference = findPreference(getString(R.string.pref_account_email_key));
+        emailPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final CharSequence email = preference.getTitle();
+                if (TextUtils.isEmpty(email)) {
+                    addEmailAndPassword();
+                } else {
+                    changeEmail(String.valueOf(email));
+                }
+                return true;
+            }
+        });
+        resetPasswordPreference = findPreference(getString(R.string.pref_account_password_key));
+        signOutPreference = findPreference(getString(R.string.pref_account_sign_out_key));
+        signOutPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                signOut();
+                return true;
+            }
+        });
+        deletePreference = findPreference(getString(R.string.pref_account_delete_key));
+        deletePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                deleteAccount();
+                return true;
+            }
+        });
+
+        resetPasswordPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getControllerFactory().getTrackingController().tagEvent(new ResetPassword(ResetPassword.Location.FROM_PROFILE));
+                return false;
+            }
+        });
+
+        picturePreference = (PicturePreference) findPreference(getString(R.string.pref_account_picture_key));
+        picturePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getControllerFactory().getCameraController().openCamera(CameraContext.SETTINGS);
+                return true;
+            }
+        });
+        colorPreference = (ColorPreference) findPreference(getString(R.string.pref_account_color_key));
+        colorPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                getChildFragmentManager().beginTransaction()
+                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                         .add(AccentColorPreferenceDialogFragment.newInstance(getStoreFactory().getProfileStore().getAccentColor()),
+                                              AccentColorPreferenceDialogFragment.TAG)
+                                         .addToBackStack(AccentColorPreferenceDialogFragment.TAG)
+                                         .commit();
+                return true;
+            }
+        });
+        themePreference = (SwitchPreference) findPreference(getString(R.string.pref_account_theme_switch_key));
+        themePreference.setChecked(getControllerFactory().getThemeController().isDarkTheme());
+
+        if (LayoutSpec.isTablet(getActivity())) {
+            PreferenceCategory accountAppearanceCategory = (PreferenceCategory) findPreference(getString(R.string.pref_account_appearance_category_key));
+            if (accountAppearanceCategory != null) {
+                accountAppearanceCategory.removePreference(themePreference);
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getControllerFactory().getAccentColorController().addAccentColorObserver(this);
+        getStoreFactory().getProfileStore().addProfileStoreAndUpdateObserver(this);
+        getStoreFactory().getZMessagingApiStore().getApi().onInit(new InitListener() {
+            @Override
+            public void onInitialized(Self user) {
+                picturePreference.setSelfUser(user);
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        picturePreference.setSelfUser(null);
+        getControllerFactory().getAccentColorController().removeAccentColorObserver(this);
+        getStoreFactory().getProfileStore().removeProfileStoreObserver(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (namePreference != null) {
+            namePreference.setOnPreferenceChangeListener(null);
+            namePreference = null;
+        }
+        phonePreference = null;
+        emailPreference = null;
+        if (signOutPreference != null) {
+            signOutPreference.setOnPreferenceClickListener(null);
+            signOutPreference = null;
+        }
+        if (resetPasswordPreference != null) {
+            resetPasswordPreference.setOnPreferenceClickListener(null);
+            resetPasswordPreference = null;
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public Event handlePreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Event event = null;
+        if (key.equals(getString(R.string.pref_account_theme_switch_key))) {
+            getControllerFactory().getThemeController().toggleThemePending(true);
+            event = new ChangedThemeEvent(getControllerFactory().getThemeController().isDarkTheme());
+        }
+        return event;
+    }
+
+    @Override
+    public void onAccentColorChangedRemotely(Object sender, int color) {
+    }
+
+    @Override
+    public void onMyNameHasChanged(Object sender, String myName) {
+        if (namePreference == null) {
+            return;
+        }
+        namePreference.setTitle(myName);
+        namePreference.setText(myName);
+        namePreference.setSummary(getString(R.string.pref_account_name_title));
+    }
+
+    @Override
+    public void onMyEmailHasChanged(String myEmail, boolean isVerified) {
+        if (emailPreference == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(myEmail)) {
+            emailPreference.setTitle(R.string.pref_account_add_email_title);
+            emailPreference.setSummary("");
+        } else {
+            if (isVerified) {
+                getChildFragmentManager().popBackStack(VerifyEmailPreferenceFragment.TAG,
+                                                       FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+            emailPreference.setTitle(myEmail);
+            emailPreference.setSummary(R.string.pref_account_email_title);
+        }
+    }
+
+    @Override
+    public void onMyPhoneHasChanged(String myPhone, boolean isVerified) {
+        if (phonePreference == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(myPhone)) {
+            phonePreference.setTitle(R.string.pref_account_add_phone_title);
+            phonePreference.setSummary("");
+        } else {
+            phonePreference.setTitle(myPhone);
+            phonePreference.setSummary(R.string.pref_account_phone_title);
+        }
+    }
+
+    @Override
+    public void onPhoneUpdateFailed(String myPhone, int errorCode, String message, String label) {}
+
+    @Override
+    public void onMyEmailAndPasswordHasChanged(String myEmail) {
+        onMyEmailHasChanged(myEmail, getStoreFactory().getProfileStore().isEmailVerified());
+    }
+
+    @Override
+    public void onVerifyEmail(String email) {
+        getChildFragmentManager().popBackStack(AddEmailAndPasswordPreferenceDialogFragment.TAG,
+                                               FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getChildFragmentManager().popBackStack(ChangeEmailPreferenceDialogFragment.TAG,
+                                               FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        verifyEmail(email);
+    }
+
+    @Override
+    public void onVerifyPhone(String phoneNumber) {
+        getChildFragmentManager().popBackStack(AddPhoneNumberPreferenceDialogFragment.TAG,
+                                               FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        verifyPhoneNumber(phoneNumber);
+    }
+
+    private void signOut() {
+        ViewUtils.showAlertDialog(getActivity(),
+                                  null,
+                                  getString(R.string.pref_account_sign_out_warning_message),
+                                  getString(R.string.pref_account_sign_out_warning_verify),
+                                  getString(R.string.pref_account_sign_out_warning_cancel),
+                                  new DialogInterface.OnClickListener() {
+                                      @Override
+                                      public void onClick(DialogInterface dialog, int which) {
+                                          // TODO: Remove old SignOut event https://wearezeta.atlassian.net/browse/AN-4232
+                                          getControllerFactory().getTrackingController().tagEvent(new SignOut());
+                                          getControllerFactory().getTrackingController().tagEvent(new LoggedOutEvent());
+                                          getControllerFactory().getSpotifyController().logout();
+                                          getStoreFactory().getZMessagingApiStore().logout();
+                                      }
+                                  },
+                                  null);
+    }
+
+    private void deleteAccount() {
+        final String email = (String) emailPreference.getTitle();
+        final String phone = (String) phonePreference.getTitle();
+        final String message;
+        if (getString(R.string.pref_account_add_email_title).equals(email)) {
+            message = getString(R.string.pref_account_delete_warning_message_sms, phone);
+        } else {
+            message = getString(R.string.pref_account_delete_warning_message_email, email);
+        }
+        ViewUtils.showAlertDialog(getActivity(),
+                                  getString(R.string.pref_account_delete_warning_title),
+                                  TextViewUtils.getBoldText(getActivity(), message),
+                                  getString(R.string.pref_account_delete_warning_verify),
+                                  getString(R.string.pref_account_delete_warning_cancel),
+                                  new DialogInterface.OnClickListener() {
+                                      @Override
+                                      public void onClick(DialogInterface dialog, int which) {
+                                          getStoreFactory().getZMessagingApiStore().delete();
+                                      }
+                                  },
+                                  null);
+    }
+
+    private void verifyPhoneNumber(String phoneNumber) {
+        getChildFragmentManager().beginTransaction()
+                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                 .add(VerifyPhoneNumberPreferenceFragment.newInstance(phoneNumber),
+                                      VerifyPhoneNumberPreferenceFragment.TAG)
+                                 .addToBackStack(VerifyPhoneNumberPreferenceFragment.TAG)
+                                 .commit();
+    }
+
+    private void verifyEmail(String email) {
+        getChildFragmentManager().beginTransaction()
+                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                 .add(VerifyEmailPreferenceFragment.newInstance(email),
+                                      VerifyEmailPreferenceFragment.TAG)
+                                 .addToBackStack(VerifyEmailPreferenceFragment.TAG)
+                                 .commit();
+    }
+
+    private void addPhoneNumber() {
+        getChildFragmentManager().beginTransaction()
+                                 .add(AddPhoneNumberPreferenceDialogFragment.newInstance(),
+                                      AddPhoneNumberPreferenceDialogFragment.TAG)
+                                 .addToBackStack(AddPhoneNumberPreferenceDialogFragment.TAG)
+                                 .commit();
+    }
+
+    @Override
+    public void changePhoneNumber(String phoneNumber) {
+        getChildFragmentManager().beginTransaction()
+                                 .add(AddPhoneNumberPreferenceDialogFragment.newInstance(phoneNumber),
+                                      AddPhoneNumberPreferenceDialogFragment.TAG)
+                                 .addToBackStack(AddPhoneNumberPreferenceDialogFragment.TAG)
+                                 .commit();
+    }
+
+    @Override
+    public void changeEmail(String email) {
+        getChildFragmentManager().beginTransaction()
+                                 .add(ChangeEmailPreferenceDialogFragment.newInstance(email),
+                                      ChangeEmailPreferenceDialogFragment.TAG)
+                                 .addToBackStack(ChangeEmailPreferenceDialogFragment.TAG)
+                                 .commit();
+    }
+
+    private void addEmailAndPassword() {
+        getChildFragmentManager().beginTransaction()
+                                 .add(AddEmailAndPasswordPreferenceDialogFragment.newInstance(),
+                                      AddEmailAndPasswordPreferenceDialogFragment.TAG)
+                                 .addToBackStack(AddEmailAndPasswordPreferenceDialogFragment.TAG)
+                                 .commit();
+    }
+
+    @Override
+    public void onAccentColorHasChanged(Object sender, int color) {
+        colorPreference.setAccentColor(color);
+    }
+
+    public interface Container {
+    }
+}

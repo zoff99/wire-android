@@ -1,0 +1,12 @@
+# copy this to a file named "api-keys.properties" in the same directory and put in the real keys
+
+localyticsAppKey = your-key-here
+localyticsAppKeyProd = your-key-here
+
+hockeyAppKey = your-key-here
+hockeyAppKeyCand = your-key-here
+hockeyAppKeyProd =  your-key-here
+hockeyAppKeyInternal = your-key-here
+hockeyAppKeyAvs = your-key-here
+hockeyAppKeyQaavs = your-key-here
+hockeyAppKeyExperimental = your-key-here

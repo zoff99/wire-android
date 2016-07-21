@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<com.waz.zclient.ui.views.TouchFilterableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                      xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                      xmlns:tools="http://schemas.android.com/tools"
+                                                      android:layout_width="match_parent"
+                                                      android:layout_height="wrap_content"
+                                                      android:orientation="horizontal"
+                                                      android:gravity="center"
+                                                      android:paddingRight="@dimen/content__row__padding_right"
+                                                      android:baselineAligned="false"
+    >
+
+<LinearLayout
+        android:layout_width="@dimen/content__width"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        tools:ignore="InefficientWeight,UselessParent"
+        >
+
+        <com.waz.zclient.pages.main.conversation.views.row.message.views.TextMessageWithTimestamp
+            android:id="@+id/tmwt__message_and_timestamp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/content__padding_left"
+            android:layout_gravity="center"
+            />
+
+        <com.waz.zclient.ui.views.BoundLayout
+            android:id="@+id/fl__row_conversation__message_error_container"
+            android:layout_height="match_parent"
+            android:layout_width="@dimen/content__message__progress_size"
+            android:layout_marginRight="@dimen/content__padding_half_right"
+            android:layout_gravity="left|top"
+            app:maximumHeight="@dimen/content__message__progress_size"
+            >
+
+            <com.waz.zclient.views.SendingAnimationView
+                android:id="@+id/v__row_conversation__pending"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                app:circleRadius="@dimen/content__message__error_radius"
+                app:pendingStop="@integer/content__message__progress_pending_stop"
+                app:pendingDuration="@integer/content__message__progress_duration"
+                style="?messageStreamUnsentIndicator"
+                />
+
+            <!-- Wrapper to increase click area around icon -->
+            <FrameLayout
+                android:id="@+id/v__row_conversation__error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <com.waz.zclient.ui.text.GlyphTextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/text__secondary_light"
+                    android:textSize="@dimen/content__message__error_glyph_size"
+                    android:text="@string/glyph__redo"
+                    />
+            </FrameLayout>
+
+        </com.waz.zclient.ui.views.BoundLayout>
+
+    </LinearLayout>
+
+</com.waz.zclient.ui.views.TouchFilterableLinearLayout>

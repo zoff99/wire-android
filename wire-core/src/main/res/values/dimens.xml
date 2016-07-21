@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="circle_icon_button_stroke">0dp</dimen>
+    <dimen name="cursor_position_threshold">40dp</dimen>
+    <dimen name="cursor_high_speed_threshold">5dp</dimen>
+
+    <dimen name="options_menu_row_side_margin">56dp</dimen>
+    <dimen name="options_menu_row_top_margin">32dp</dimen>
+    <dimen name="options_menu_row_item_total_width">104dp</dimen>
+
+    <!-- Buttons-->
+    <dimen name="button__corner_radius">4dp</dimen>
+    <dimen name="button__stroke_width">1dp</dimen>
+    <dimen name="button__height">28dp</dimen>
+    <dimen name="button__horizontal_padding">16dp</dimen>
+
+    <!-- Calling-->
+    <dimen name="calling__micro__height">2dp</dimen>
+    <dimen name="calling__mini__height">64dp</dimen>
+    <dimen name="calling__incoming_box__height">144dp</dimen>
+    <dimen name="calling__ongoing_box__height">176dp</dimen>
+    <dimen name="calling__button__top_padding_mini">18dp</dimen>
+    <dimen name="calling__button__glyph__size">24dp</dimen>
+    <dimen name="calling__text_container__left_padding">48dp</dimen>
+    <dimen name="calling__text_container__right_padding">48dp</dimen>
+    <dimen name="calling__text_container__margin_top">100dp</dimen>
+    <dimen name="calling__text_container__margin_top_mini">24dp</dimen>
+    <dimen name="calling__not_joined__icon__margin">4dp</dimen>
+    <dimen name="calling_chathead__margin_top">24dp</dimen>
+    <dimen name="calling__chat_head__width">56dp</dimen>
+    <dimen name="calling__chat_head__height">56dp</dimen>
+    <dimen name="calling__chat_head__gain_margin">9dp</dimen>
+    <dimen name="calling__chat_head__spinner_size">62dp</dimen>
+    <dimen name="calling__chat_head__spinner_margin_top">6dp</dimen>
+    <dimen name="calling__chat_head_with_animation__width">68dp</dimen>
+    <dimen name="calling__chat_head_with_animation__height">68dp</dimen>
+    <dimen name="calling__chathead__with__footer__height">92dp</dimen>
+    <dimen name="calling__chathead__appearing__start_translationY">-48dp</dimen>
+    <dimen name="incoming_call__chathead_container__start_translationY">50dp</dimen>
+    <dimen name="incoming_call__text_container__start_translationY">50dp</dimen>
+    <dimen name="incoming_call__chathead_container__dismiss_translationY">150dp</dimen>
+    <dimen name="calling__button_incoming__margin_top">46dp</dimen>
+    <dimen name="calling__bottom_outgoing__margin_top">128dp</dimen>
+    <dimen name="calling__header__margin__bottom">24dp</dimen>
+    <dimen name="calling__controls__max_width">264dp</dimen>
+    <dimen name="calling__controls__margin__top">32dp</dimen>
+    <dimen name="calling__controls__button__dimension">48dp</dimen>
+    <dimen name="calling__controls__button_label__dimension">80dp</dimen>
+    <dimen name="calling__controls__button_position_height">64dp</dimen>
+    <dimen name="calling__controls__button__label__margin_top">8dp</dimen>
+    <dimen name="calling__participants_max_diameter">264dp</dimen>
+    <dimen name="calling__participants_group_call">132dp</dimen>
+    <dimen name="calling__ongoing_call_controls__max_diameter">296dp</dimen>
+    <dimen name="calling__self_video_preview__dimension">80dp</dimen>
+    <dimen name="calling__controls__incoming_controls__height">72dp</dimen>
+    <dimen name="calling__controls__incoming_controls__user_avatar__dimension">72dp</dimen>
+
+    <!-- Conversation quick menu-->
+    <dimen name="conversation_quick_menu__height">56dp</dimen>
+    <dimen name="conversation_quick_menu__border_line__height">0.5dp</dimen>
+
+    <!-- Cursor-->
+    <dimen name="cursor_caret_width">2dp</dimen>
+    <dimen name="cursor_menu_button_width">56dp</dimen>
+    <dimen name="cursor_button_width">64dp</dimen>
+    <dimen name="cursor_button_height">56dp</dimen>
+    <dimen name="cursor_button_radius">13dp</dimen>
+    <dimen name="cursor_desired_width">424dp</dimen>
+    <dimen name="cursor_menu_button__margin_left">4dp</dimen>
+    <dimen name="cursor_button_horizontal_margin">18dp</dimen>
+    <dimen name="cursor_height">48dp</dimen>
+    <dimen name="caret_height">40dp</dimen>
+    <dimen name="caret_width">128dp</dimen>
+    <dimen name="cursor_button_offset">56dp</dimen>
+    <dimen name="cursor_anchor1">8dp</dimen>
+    <dimen name="cursor_anchor2">72dp</dimen>
+    <dimen name="cursor_anchor3">64dp</dimen>
+    <dimen name="cursor_button_text_size">16dp</dimen>
+    <dimen name="cursor__menu__text_size">20dp</dimen>
+    <dimen name="calling__start_a_call_circle1_radius">18dp</dimen>
+    <dimen name="calling__start_a_call_circle2_radius">22dp</dimen>
+    <dimen name="calling__start_a_call_circle3_radius">26dp</dimen>
+    <dimen name="cursor__open_button__right_margin">30dp</dimen>
+    <dimen name="cursor__top_border__height">1dp</dimen>
+    <dimen name="cursor__menu_button__diameter">28dp</dimen>
+    <dimen name="cursor__menu_button__padding">4dp</dimen>
+
+    <!-- color picker-->
+    <dimen name="color_picker_circle_height">72dp</dimen>
+    <dimen name="color_picker_circle_regular_item_height">2dp</dimen>
+    <dimen name="color_picker_circle_radius">12dp</dimen>
+    <dimen name="color_picker__edge_offset">1dp</dimen>
+    <dimen name="color_picker_dot_size">42dp</dimen>
+    <dimen name="color_picker_small_dot_radius">3dp</dimen>
+    <dimen name="color_picker_medium_dot_radius">6dp</dimen>
+    <dimen name="color_picker_large_dot_radius">9dp</dimen>
+    <dimen name="color_picker_small_ring_radius">6dp</dimen>
+    <dimen name="color_picker_medium_ring_radius">9dp</dimen>
+    <dimen name="color_picker_large_ring_radius">12dp</dimen>
+    <dimen name="color_picker_ring_size">1dp</dimen>
+    <dimen name="draw_image_trim_buffer">24dp</dimen>
+
+    <!-- options menu-->
+    <dimen name="options_menu_item__padding">22dp</dimen>
+    <dimen name="options_menu_item__padding__big">30dp</dimen>
+    <dimen name="options_menu_item__height">56dp</dimen>
+    <dimen name="options_menu_item__width">56dp</dimen>
+    <dimen name="options_menu_item_glyph_text_size">20dp</dimen>
+    <dimen name="options_menu_item_title_height">16dp</dimen>
+    <dimen name="options_menu_item_title_margin_top">8dp</dimen>
+    <dimen name="options_menu_cancel_height">16dp</dimen>
+    <dimen name="options_menu_cancel_margin_top">72dp</dimen>
+    <dimen name="options_menu_cancel_margin_bottom">40dp</dimen>
+
+    <!-- Sign in tab-->
+    <dimen name="sign_tab_indicator_marker__height">8dp</dimen>
+
+    <!-- Wire values-->
+    <dimen name="wire__text_size__tiny">8dp</dimen>
+    <dimen name="wire__text_size__small">11dp</dimen>
+    <dimen name="wire__text_size__regular">16sp</dimen>
+    <dimen name="wire__text_size__medium">24dp</dimen>
+    <dimen name="wire__text_size__big">28dp</dimen>
+    <dimen name="wire__text_size__huge">32dp</dimen>
+    <dimen name="wire__text_size__emoji">40sp</dimen>
+    <dimen name="wire__text_spacing__tiny">2dp</dimen>
+    <dimen name="wire__text_spacing__medium">4dp</dimen>
+    <dimen name="wire__text_spacing__large">8dp</dimen>
+    <dimen name="wire__margin_top__big">40dp</dimen>
+    <dimen name="wire__margin_huge">48dp</dimen>
+    <dimen name="wire__padding__tiny">4dp</dimen>
+    <dimen name="wire__padding__small">8dp</dimen>
+    <dimen name="wire__padding__4">4dp</dimen>
+    <dimen name="wire__padding__5">5dp</dimen>
+    <dimen name="wire__padding__6">6dp</dimen>
+    <dimen name="wire__padding__8">8dp</dimen>
+    <dimen name="wire__padding__10">10dp</dimen>
+    <dimen name="wire__padding__12">12dp</dimen>
+    <dimen name="wire__padding__12_neg">-12dp</dimen>
+    <dimen name="wire__padding__13">13dp</dimen>
+    <dimen name="wire__padding__14">14dp</dimen>
+    <dimen name="wire__padding__16">16dp</dimen>
+    <dimen name="wire__padding__18">18dp</dimen>
+    <dimen name="wire__padding__20">20dp</dimen>
+    <dimen name="wire__padding__26">26dp</dimen>
+    <dimen name="wire__padding__32">32dp</dimen>
+    <dimen name="wire__padding__regular">16dp</dimen>
+    <dimen name="wire__padding__call">18dp</dimen>
+    <dimen name="wire__padding__bottom__call">22dp</dimen>
+    <dimen name="wire__padding__large">22dp</dimen>
+    <dimen name="wire__padding__big">24dp</dimen>
+    <dimen name="wire__padding__huge">28dp</dimen>
+    <dimen name="wire__margin__39">39dp</dimen>
+    <dimen name="wire__margin__huge">40dp</dimen>
+    <dimen name="wire__divider__height">1dp</dimen>
+    <dimen name="wire__divider__height__thin">0.5dp</dimen>
+    <dimen name="wire__icon_button__text_size__small">@dimen/wire__text_size__small</dimen>
+    <dimen name="wire__icon_button__text_size_half">8dp</dimen>
+    <dimen name="wire__icon_button__text_size">16dp</dimen>
+    <dimen name="wire__icon_button_radius">15dp</dimen>
+    <dimen name="wire__icon_button__diameter">28dp</dimen>
+    <dimen name="wire__stroke">0.5dp</dimen>
+    <dimen name="wire__button__height_small">28dp</dimen>
+    <dimen name="wire__call_indicator_small__width">18dp</dimen>
+    <dimen name="wire__call_indicator__small__outer_radius">9dp</dimen>
+    <dimen name="wire__call_indicator__small__middle_radius">6dp</dimen>
+    <dimen name="wire__call_indicator__small__inner_radius">3dp</dimen>
+    <dimen name="wire__call_indicator__large__width">56dp</dimen>
+    <dimen name="wire__call_indicator__large__outer_radius">23dp</dimen>
+    <dimen name="wire__call_indicator__large__middle_radius">20dp</dimen>
+    <dimen name="wire__call_indicator__large__inner_radius">17dp</dimen>
+    <dimen name="wire__otr__shield__small_width">16dp</dimen>
+    <dimen name="wire__otr__shield__small_height">16dp</dimen>
+    <dimen name="wire__otr__shield__padding__top">6dp</dimen>
+    <dimen name="wire__otr__shield__padding__left">0dp</dimen>
+    <dimen name="wire__otr__shield__padding__right">12dp</dimen>
+    <dimen name="wire__otr__shield__padding__bottom">6dp</dimen>
+    <dimen name="wire__otr__shield__regular_width">20dp</dimen>
+    <dimen name="wire__otr__shield__regular_height">20dp</dimen>
+    <dimen name="wire__otr__switch_height">20dp</dimen>
+    <dimen name="wire__fake_negative__padding__32">-32dp</dimen>
+    <dimen name="wire__otr__message__height">32dp</dimen>
+    <dimen name="wire__dialog__min_width">104dp</dimen>
+
+    <!-- From the App module-->
+    <dimen name="background__max_offset_x">40dp</dimen>
+    <dimen name="background__max_offset_y">50dp</dimen>
+
+    <dimen name="chathead__picker__glyph__font_size">20dp</dimen>
+    <dimen name="chathead__min_size_large_border">80dp</dimen>
+    <dimen name="chathead__border_width">2dp</dimen>
+    <dimen name="chathead__large_border_width">3dp</dimen>
+
+    <dimen name="connect_request__common_users__height">88dp</dimen>
+    <dimen name="connect_request__common_users__title__margin_bottom">14dp</dimen>
+    <dimen name="connect_request__common_users__chathead__vertical_padding">8dp</dimen>
+    <dimen name="connect_request__common_users__pending_connection__margin_bottom">88dp</dimen>
+    <dimen name="connect_request__padding">8dp</dimen>
+    <dimen name="connect_request__padding_users">16dp</dimen>
+    <dimen name="connect_request__inbox__max_width">384dp</dimen>
+    <dimen name="connect_request__footer_menu__height">72dp</dimen>
+    <dimen name="connect_request__footer_menu__padding_bottom">@dimen/wire__padding__big</dimen>
+    <dimen name="connect_request__separator__padding_horizontal">0dp</dimen>
+    <dimen name="connect_request__common_users__chathead__width">36dp</dimen>
+    <dimen name="connect_request__common_users__chathead_name__width">60dp</dimen>
+
+    <dimen name="content__separator__avatar_container__width">@dimen/content__padding_left</dimen>
+    <dimen name="content__separator__label_container__width">@dimen/framework__wrap_content</dimen>
+    <dimen name="content__width">0dp</dimen>
+    <dimen name="content__row__padding_right">0dp</dimen>
+    <dimen name="content__padding_left">72dp</dimen>
+    <dimen name="content__divider__padding_left">20dp</dimen>
+    <dimen name="content__padding_half_right">12dp</dimen>
+    <dimen name="content__padding_right">24dp</dimen>
+    <dimen name="content__line_spacing_extra">3dp</dimen>
+    <dimen name="content__card__corner_radius">4dp</dimen>
+    <dimen name="content__separator__padding__before_started">24dp</dimen>
+    <dimen name="content__separator__padding__between_two_messages">8dp</dimen>
+    <dimen name="content__separator__padding__between_name_image">8dp</dimen>
+    <dimen name="content__separator__padding__between_image_name">8dp</dimen>
+    <dimen name="content__separator__padding__between_image_time">16dp</dimen>
+    <dimen name="content__separator__padding__between_time_text">16dp</dimen>
+    <dimen name="content__separator__padding__between_name_text">0dp</dimen>
+    <dimen name="content__separator__padding__before_name">14dp</dimen>
+    <dimen name="content__separator__padding__to_knock">14dp</dimen>
+    <dimen name="content__separator__padding__after_knock">14dp</dimen>
+    <dimen name="content__separator__padding__between_time_anything">10dp</dimen>
+    <dimen name="content__separator__padding__between_text_time">8dp</dimen>
+    <dimen name="content__separator__padding__after_name_and_time">8dp</dimen>
+    <dimen name="content__separator__padding__after_image">10dp</dimen>
+    <dimen name="content__separator__padding__before_image">10dp</dimen>
+    <dimen name="content__separator__padding__between_image_image">0dp</dimen>
+    <dimen name="content__separator__padding__between_text_audio">16dp</dimen>
+    <dimen name="content__separator__padding__between_asset_asset">10dp</dimen>
+    <dimen name="content__separator__padding__to_member_change">24dp</dimen>
+    <dimen name="content__separator__padding__after_member_change">16dp</dimen>
+    <dimen name="content__separator__padding__between_after_member_change_name">8dp</dimen>
+    <dimen name="content__separator__padding__to_name_change">24dp</dimen>
+    <dimen name="content__separator__padding__after_name_change">24dp</dimen>
+    <dimen name="content__separator__padding__to_missed_call">24dp</dimen>
+    <dimen name="content__separator__chathead__size">28dp</dimen>
+    <dimen name="content__message_timestamp__padding_top">4dp</dimen>
+    <dimen name="content__message__progress_size">40dp</dimen>
+    <dimen name="content__message__progress_margin_top">8dp</dimen>
+    <dimen name="content__message__progress_margin_bottom">4dp</dimen>
+    <dimen name="content__message__unsend_indicator_background_radius">12dp</dimen>
+    <dimen name="content__message__error_radius">6dp</dimen>
+    <dimen name="content__message__error_glyph_size">12dp</dimen>
+    <dimen name="content__message__file__glyph_size">16dp</dimen>
+    <dimen name="typing_indicator__chathead_size">30dp</dimen>
+    <dimen name="typing_indicator__chathead_translation">8dp</dimen>
+    <dimen name="content__connect_request__chathead__margin_top">64dp</dimen>
+    <dimen name="content__participants_changed__padding_top">32dp</dimen>
+    <dimen name="content__system_message__font_size">12dp</dimen>
+    <dimen name="content__system__participant__added__single__image_diameter">79dp</dimen>
+    <dimen name="content__system__participant__added__single__padding_between">16dp</dimen>
+    <dimen name="content__system__participant__added__multi__image_diameter">55dp</dimen>
+    <dimen name="content__system_message__added_multi__member_counter__circle_line_width">1dp</dimen>
+    <dimen name="content__youtube__play_button__size">36dp</dimen>
+    <dimen name="content__youtube__error_text__padding_top">9dp</dimen>
+    <dimen name="content__youtube__logo__width">40dp</dimen>
+    <dimen name="content__youtube__logo__height">16dp</dimen>
+    <dimen name="content__youtube__logo__padding_top">12dp</dimen>
+    <dimen name="content__youtube__logo__padding_right">24dp</dimen>
+    <dimen name="content__image__polka__loading_bar__margin_top">2dp</dimen>
+    <dimen name="content__image__polka__loading_bar__total_height">4dp</dimen>
+    <dimen name="content__image__polka_size" tools:ignore="UnusedResources">6dp</dimen>
+    <dimen name="content__image__polka_spacing" tools:ignore="UnusedResources">2dp</dimen>
+    <dimen name="content__image__progress_size">40dp</dimen>
+    <dimen name="content__image__progress_circle_padding">4dp</dimen>
+    <dimen name="content__missed_call__space_between_image_and_text">8dp</dimen>
+    <dimen name="cursor__list_view_footer__height">16dp</dimen>
+    <dimen name="cursor__list_view_footer_no_cursor__height">40dp</dimen>
+    <dimen name="content__invite_banner__padding_bottom">32dp</dimen>
+    <dimen name="content__invite_banner__icon__size">40dp</dimen>
+    <dimen name="toolbar__padding__right">4dp</dimen>
+    <dimen name="content__video_message__bottom_bar__height">56dp</dimen>
+    <dimen name="content__video_message__button__size">64dp</dimen>
+    <dimen name="content__video_message__glyph_size">32dp</dimen>
+    <dimen name="content__video_message__preview__time_width">48dp</dimen>
+    <dimen name="content__video_message__preview__bottom_control_height">60dp</dimen>
+
+    <dimen name="content__audio_message__view_height">56dp</dimen>
+    <dimen name="content__audio_message__button__size">32dp</dimen>
+    <dimen name="content__audio_message__glyph_size">16dp</dimen>
+    <dimen name="content__audio_message__duration_width">48dp</dimen>
+    <dimen name="content__audio_message__download_done_indicator__size">14dp</dimen>
+    <dimen name="content__audio_message__download_done_indicator__offset_top">16dp</dimen>
+    <dimen name="content__audio_message__download_done_indicator__offset_left">12dp</dimen>
+
+    <dimen name="content__location_message__map_height">104dp</dimen>
+    <dimen name="content__location_message__name_height">42dp</dimen>
+    <dimen name="content__location_message__name_padding_end">58dp</dimen>
+    <dimen name="content__location_message__corner_radius">4dp</dimen>
+    <dimen name="content__location_message__bottom_card_margin">2dp</dimen>
+    <dimen name="content__location_message__pin_icon__text_size">32dp</dimen>
+
+    <dimen name="content__link_preview__image_height">160dp</dimen>
+
+    <dimen name="conversation__header__media__button_size">60dp</dimen>
+    <dimen name="conversation__header__bottom_bar__height">0.5dp</dimen>
+
+    <dimen name="list_padding_top">32dp</dimen>
+    <dimen name="list_padding_bottom">24dp</dimen>
+    <dimen name="list_extra_padding_when_unread">16dp</dimen>
+    <dimen name="list_font_size">@dimen/wire__text_size__regular</dimen>
+    <dimen name="list__archived_border_height">40dp</dimen>
+    <dimen name="list_row_height">56dp</dimen>
+    <dimen name="list_tile_top_padding">16dp</dimen>
+    <dimen name="list_tile_bottom_padding">16dp</dimen>
+    <dimen name="list_tile_left_padding">64dp</dimen>
+    <dimen name="list_right_indicator_right_padding">22dp</dimen>
+    <dimen name="list_indicator_between_padding">16dp</dimen>
+    <dimen name="conversation__unread_dot__radius">4dp</dimen>
+    <dimen name="list_menu_unread_width">18dp</dimen>
+    <dimen name="list__menu_indicator__max_swipe_offset">98dp</dimen>
+    <dimen name="list__menu_indicator__dot__radius">4dp</dimen>
+    <dimen name="list__menu_indicator__dot__horizontal_margin">2dp</dimen>
+    <dimen name="list__menu_indicator__dot__first_animation_offset_x">16dp</dimen>
+    <dimen name="list__menu_indicator__dot__second_animation_offset_x">8dp</dimen>
+    <dimen name="list__sticky_header__self_link__height">64dp</dimen>
+    <dimen name="list__sticky_header__startui_button__font_size">16dp</dimen>
+    <dimen name="list_pending_connect_request_indicator__stroke_width">1dp</dimen>
+    <dimen name="list__unsent_indicator_radius">8dp</dimen>
+    <dimen name="list__unsent_indicator_text_size">10dp</dimen>
+    <dimen name="calling__conversation_list__width">30dp</dimen>
+    <dimen name="calling__conversation_list__height">30dp</dimen>
+    <dimen name="calling__conversation_list__margin_left">17dp</dimen>
+    <dimen name="calling__conversation_list__margin_top">4dp</dimen>
+    <dimen name="conversation_list__left_icon_width">64dp</dimen>
+    <dimen name="conversation_list__right_icon_width">54dp</dimen>
+    <dimen name="conversation_list__call_indicator__margin_left">24dp</dimen>
+    <dimen name="list__archived_box_height">68dp</dimen>
+    <dimen name="list__archived_left_margin">16dp</dimen>
+    <dimen name="list__archived_box__text_size">12dp</dimen>
+    <dimen name="list__archived_box__icon_text_size">20dp</dimen>
+    <dimen name="list_menu_distance_threshold">154dp</dimen>
+    <dimen name="list__ping_label_distance">8dp</dimen>
+    <dimen name="conversation_list__sticky_view__top_margin">88dp</dimen>
+    <dimen name="framework__dialog__marker__radius">28dp</dimen>
+    <dimen name="conversation_list__action_icon__size">28dp</dimen>
+    <dimen name="conversation_list__action_icon__size__big">48dp</dimen>
+    <dimen name="conversation_list__action_label__padding_left">64dp</dimen>
+    <dimen name="conversation_list__action_view__height">56dp</dimen>
+    <dimen name="conversation_list__hint__margin_top">-20dp</dimen>
+    <dimen name="conversation_list__hint__marker_size">16dp</dimen>
+
+    <dimen name="framework__wrap_content">2dp</dimen>
+    <dimen name="framework__general__left_padding">24dp</dimen>
+    <dimen name="framework__general__top_padding">24dp</dimen>
+    <dimen name="framework__general__right_padding">24dp</dimen>
+    <dimen name="framework__general__bottom_padding">24dp</dimen>
+    <dimen name="framework__feedback_circle__radius">72dp</dimen>
+    <dimen name="framework__tooltip__background__radius">4dp</dimen>
+
+    <dimen name="framework__sidebar_width">320dp</dimen>
+    <dimen name="inapp__web_view__font_size">20dp</dimen>
+    <dimen name="inapp__web_view__padding">24dp</dimen>
+    <dimen name="content__system_message__conversation_name__padding_between_user_and_conversation_name">4dp</dimen>
+    <dimen name="touch_target_buttons">52dp</dimen>
+    <dimen name="root__parallax_distance">200dp</dimen>
+    <dimen name="nearby__chathead__diameter">120dp</dimen>
+    <dimen name="nearby__username__font_size">16dp</dimen>
+    <dimen name="nearby__row__padding_top">32dp</dimen>
+    <dimen name="country_box__text_size">18dp</dimen>
+    <dimen name="framework_divider_height">1dp</dimen>
+    <dimen name="new_reg__country_dialog__header_padding">15dp</dimen>
+    <dimen name="new_reg__password_forget__margin_top">24dp</dimen>
+    <dimen name="new_reg__edit_to_header__margin_top">24dp</dimen>
+    <dimen name="cursor__black_box__height">88dp</dimen>
+    <dimen name="mentioning__avatar__size">32dp</dimen>
+    <dimen name="mentioning__item__padding_inner">8dp</dimen>
+    <dimen name="mentioning__item__padding_outer">4dp</dimen>
+    <dimen name="mentioning__popover__height">48dp</dimen>
+    <dimen name="mentioning__marker__size">16dp</dimen>
+    <dimen name="profile__image_top_padding">92dp</dimen>
+    <dimen name="participant__image_shift">-32dp</dimen>
+    <dimen name="chathead__margin">26dp</dimen>
+    <dimen name="error__image__margin">32dp</dimen>
+    <dimen name="profile__image__width_regular">260dp</dimen>
+    <dimen name="profile__image__height_regular">260dp</dimen>
+    <dimen name="profile__image__width_small">116dp</dimen>
+    <dimen name="profile__image__height_small">116dp</dimen>
+    <dimen name="profile__image__width">@dimen/profile__image__width_small</dimen>
+    <dimen name="profile__image__height">@dimen/profile__image__height_small</dimen>
+    <dimen name="prefs__verification__padding_top">24dp</dimen>
+    <dimen name="prefs__verification__padding_left">30dp</dimen>
+    <dimen name="prefs__verification__padding_right">30dp</dimen>
+    <dimen name="prefs__verification__title__text_size">16dp</dimen>
+    <dimen name="prefs__verification__hint__text_size">11dp</dimen>
+    <dimen name="prefs__verification__text_size">24dp</dimen>
+    <dimen name="prefs__verification__actions__text_size">14dp</dimen>
+    <dimen name="prefs__verification__margins_between">24dp</dimen>
+    <dimen name="prefs__verification__margins_small">12dp</dimen>
+    <dimen name="prefs__phone_verification__after_code">36dp</dimen>
+    <dimen name="prefs__verification__separator_height">1dp</dimen>
+    <dimen name="prefs__dialog__padding">20dp</dimen>
+    <dimen name="prefs__dialog__margin_top_bottom">48dp</dimen>
+    <dimen name="prefs__add_email_pw__margin_textinput">16dp</dimen>
+    <dimen name="participants__otr_device__header_padding_top">40dp</dimen>
+    <dimen name="participants__otr_device__header_padding_bottom">@dimen/wire__padding__regular</dimen>
+    <dimen name="participants__otr_device__padding_top">@dimen/wire__padding__regular</dimen>
+    <dimen name="participants__otr_device__padding_bottom">32dp</dimen>
+    <dimen name="participants__otr_device__content_height">32dp</dimen>
+    <dimen name="participants__otr_device__icon_padding_right">@dimen/wire__padding__regular</dimen>
+    <dimen name="participants__otr_device__divider_padding_top">15dp</dimen>
+    <dimen name="otr__inbox__horizontal__padding">@dimen/wire__padding__regular</dimen>
+
+    <dimen name="camera__control__height">80dp</dimen>
+    <dimen name="camera__control__center_button_text_size">40dp</dimen>
+    <dimen name="camera__control__button_margin_right">@dimen/framework__general__right_padding</dimen>
+    <dimen name="camera__control__button_margin_left">@dimen/framework__general__left_padding</dimen>
+    <dimen name="camera__control__button_text_size">16dp</dimen>
+    <dimen name="camera__sketch_button_size">16dp</dimen>
+    <dimen name="camera__sketch_button_margin_right">12dp</dimen>
+    <dimen name="camera__sketch_button_margin_bottom">92dp</dimen>
+    <dimen name="camera_top_controls__height">@dimen/camera__control__height</dimen>
+    <dimen name="camera__focus__stroke_width">1dp</dimen>
+    <dimen name="camera__focus__max_size">100dp</dimen>
+    <dimen name="camera__focus__min_size">60dp</dimen>
+
+    <dimen name="framework_confirmation_menu_padding_top">24dp</dimen>
+    <dimen name="framework_confirmation_menu_padding_bottom">24dp</dimen>
+    <dimen name="framework_confirmation_menu_horizontal_padding">24dp</dimen>
+    <dimen name="framework_confirmation_menu_header_font_size">@dimen/wire__text_size__regular</dimen>
+    <dimen name="framework_confirmation_menu_text_font_size">@dimen/wire__text_size__regular</dimen>
+    <dimen name="framework_confirmation_menu_button_font_size">12dp</dimen>
+    <dimen name="framework_confirmation_menu_button_stroke_width">@dimen/button__stroke_width</dimen>
+    <dimen name="framework_confirmation_menu_button_corner_radius">@dimen/button__corner_radius</dimen>
+    <dimen name="framework_confirmation_menu_button_height">40dp</dimen>
+    <dimen name="framework_confirmation_menu_button_padding_top">24dp</dimen>
+    <dimen name="framework_confirmation_menu_button_padding_bottom">0dp</dimen>
+    <dimen name="framework_confirmation_menu_button_space_between">8dp</dimen>
+    <dimen name="framework_confirmation_menu_button_max_width">204dp</dimen>
+    <dimen name="framework__checkbox__dimension">24dp</dimen>
+    <dimen name="framework__checkbox__glyph_font_size">16dp</dimen>
+
+    <dimen name="first_time__logo__width">64dp</dimen>
+    <dimen name="first_time__logo__height">24dp</dimen>
+    <dimen name="first_time__logo__padding_top">24dp</dimen>
+    <dimen name="first_time__logo__padding_left">24dp</dimen>
+    <dimen name="first_time__sign_in__padding_top">26dp</dimen>
+    <dimen name="first_time__sign_in__padding_start">18dp</dimen>
+    <dimen name="first_time__sign_in__padding_end">18dp</dimen>
+    <dimen name="first_time__sign_in__button_height">28dp</dimen>
+    <dimen name="first_time__create_account__padding_left">28dp</dimen>
+    <dimen name="first_time__create_account__padding_right">28dp</dimen>
+    <dimen name="first_time__create_account__padding_bottom">28dp</dimen>
+    <dimen name="first_time__welcome__title_max_font_size">36dp</dimen>
+    <dimen name="first_time__welcome__subtitle_font_size">12dp</dimen>
+    <dimen name="first_time__confirm_email__side_padding">30dp</dimen>
+    <dimen name="first_time__confirm_email__envelope_size">98dp</dimen>
+    <dimen name="first_time__confirm_email__envelope_padding_bottom">50dp</dimen>
+    <dimen name="first_time__confirm_email__text_segment_vertical_padding">20dp</dimen>
+
+    <dimen name="profile__guidance__text_margin_top">0dp</dimen>
+    <dimen name="profile__edit_container__margin_bottom">64dp</dimen>
+    <dimen name="profile__pen_icon__margin_right">64dp</dimen>
+    <dimen name="profile__settings_box__font_size">12dp</dimen>
+    <dimen name="profile__settings_box__margin_bottom">4dp</dimen>
+    <dimen name="profile__settings_box__row_height">56dp</dimen>
+    <dimen name="profile__settings_box__divider_height">1dp</dimen>
+    <dimen name="profile__settings_button__font_size">18dp</dimen>
+    <dimen name="profile__settings_button__padding_left">16dp</dimen>
+    <dimen name="about__close__size">24dp</dimen>
+    <dimen name="about__website__margin_top">12dp</dimen>
+    <dimen name="about__website__margin_bottom">12dp</dimen>
+    <dimen name="about__website__text_size">12dp</dimen>
+    <dimen name="about__tos__margin_bottom">8dp</dimen>
+    <dimen name="about__tos__margin_top">48dp</dimen>
+    <dimen name="about__tos__text_size">12dp</dimen>
+    <dimen name="about__privacy__margin_bottom">10dp</dimen>
+    <dimen name="about__privacy__margin_top">10dp</dimen>
+    <dimen name="about__privacy__text_size">12dp</dimen>
+    <dimen name="about__copyright__margin_top">48dp</dimen>
+    <dimen name="about__copyright__margin_bottom">24dp</dimen>
+    <dimen name="about__copyright__text_size">12dp</dimen>
+    <dimen name="profile__edit_text__left_margin">16dp</dimen>
+    <dimen name="profile__edit_text__right_margin">16dp</dimen>
+    <dimen name="profile__edit_text__left_padding">8dp</dimen>
+    <dimen name="profile__edit_text__right_padding">8dp</dimen>
+    <dimen name="profile__edit_text__right_padding_fake">40dp</dimen>
+    <dimen name="profile__edit_text__top_padding">8dp</dimen>
+    <dimen name="profile__edit_text__bottom_padding">8dp</dimen>
+    <dimen name="profile__edit_text__margin_top">16dp</dimen>
+    <dimen name="profile__edit_text__margin_bottom">16dp</dimen>
+    <dimen name="profile__verify_phone__checkmark__background__size">72dp</dimen>
+    <dimen name="profile__verify_phone__checkmark__font_size">32dp</dimen>
+
+    <dimen name="sign_in__edit_text__height">@dimen/framework_confirmation_menu_button_height</dimen>
+    <dimen name="sign_in__edit_text__guidance__top_margin">6dp</dimen>
+    <dimen name="sign_in__edit_text__red_dot__right_margin">16dp</dimen>
+    <dimen name="sign_in__guidance_font_size">@dimen/framework_confirmation_menu_button_font_size</dimen>
+    <dimen name="sign_in_button_container_padding_bottom">16dp</dimen>
+    <dimen name="sign_in__edit_text__font_size">20dp</dimen>
+    <dimen name="sign_up__photo__margin_to_buttons">32dp</dimen>
+    <dimen name="sign_up__loading_spinner">16dp</dimen>
+    <dimen name="profile__guidance__red_dot_width">12dp</dimen>
+    <dimen name="profile__guidance__red_dot_height">12dp</dimen>
+
+    <dimen name="signup_content__margin_top">24dp</dimen>
+    <dimen name="signup_content__margin_bottom">24dp</dimen>
+    <dimen name="signup_content__width">448dp</dimen>
+    <dimen name="background__picture__corner_radius">10dp</dimen>
+    <dimen name="background__picture__outer_stroke_width">2dp</dimen>
+    <dimen name="profile__layout__margin_left">0dp</dimen>
+    <dimen name="profile__layout__margin_right">0dp</dimen>
+    <dimen name="profile__layout__margin_bottom">0dp</dimen>
+    <dimen name="profile__layout__margin_top">0dp</dimen>
+    <dimen name="participant_dialog__initial_width">320dp</dimen>
+    <dimen name="participant_dialog__min_height">248dp</dimen>
+    <dimen name="participant_dialog__regular_height">430dp</dimen>
+
+    <dimen name="drawing__conversation__name__height">14dp</dimen>
+    <dimen name="drawing__conversation__name__margin_top">10dp</dimen>
+    <dimen name="drawing__conversation__name__text_size">12dp</dimen>
+    <dimen name="drawing__color__picker__height">42dp</dimen>
+    <dimen name="drawing__color__picker__margin_top">8dp</dimen>
+    <dimen name="drawing__color__picker__margin_bottom">8dp</dimen>
+    <dimen name="drawing__bottom_bar__height">80dp</dimen>
+    <dimen name="drawing__button__padding">8dp</dimen>
+    <dimen name="drawing__send__button__padding">10dp</dimen>
+    <dimen name="drawing__button_send__text_size">40dp</dimen>
+    <dimen name="drawing__button_cancel__text_size">16dp</dimen>
+    <dimen name="drawing__button_undo__text_size">16dp</dimen>
+    <dimen name="drawing__border_scroll_bar__height">@dimen/wire__divider__height__thin</dimen>
+    <dimen name="drawing__border_line__height">@dimen/wire__divider__height__thin</dimen>
+    <dimen name="drawing__tip__font__size">12dp</dimen>
+
+    <dimen name="forced_update__header__font_size">32dp</dimen>
+    <dimen name="forced_update__sub_header__font_size">16dp</dimen>
+    <dimen name="forced_update__general_padding">8dp</dimen>
+
+    <dimen name="giphy_preview__controls_border_width">1dp</dimen>
+    <dimen name="giphy_preview__loading_indicator__height">2dp</dimen>
+    <dimen name="giphy_preview__header_margin_top">16dp</dimen>
+    <dimen name="giphy_preview__header_margin_bottom">16dp</dimen>
+    <dimen name="giphy_preview__header_margin_side">8dp</dimen>
+    <dimen name="giphy_preview__header_icons_size">16dp</dimen>
+    <dimen name="giphy_preview__header_icons_padding">8dp</dimen>
+    <dimen name="giphy_grid_view__margin">1dp</dimen>
+
+    <dimen name="audio_message_recording__recorder__margin_right">60dp</dimen>
+    <dimen name="audio_message_recording__slide_control__width">40dp</dimen>
+    <dimen name="audio_message_recording__slide_control__height">96dp</dimen>
+    <dimen name="audio_message_recording__slide_control__radius">20dp</dimen>
+    <dimen name="audio_message_recording__slide_control__margin_right">@dimen/wire__padding__12</dimen>
+    <dimen name="audio_message_recording__indicator_dot__radius">8dp</dimen>
+
+    <dimen name="pebble__height">160dp</dimen>
+
+    <dimen name="loading_bar__gap_size">32dp</dimen>
+    <dimen name="loading_bar__stroke_width">4dp</dimen>
+    <dimen name="loading_spinner__size">25dp</dimen>
+
+    <dimen name="mediaplayer__seekbar__stroke_width">10dp</dimen>
+    <dimen name="mediaplayer__seekbar_small_stroke_width">1dp</dimen>
+    <dimen name="mediaplayer__font_placeholder_size">36dp</dimen>
+    <dimen name="mediaplayer__hint_height">28dp</dimen>
+    <dimen name="mediaplayer__font_hint_padding_start">18dp</dimen>
+    <dimen name="mediaplayer__font_hint_padding_end">18dp</dimen>
+    <dimen name="mediaplayer__max_width">312dp</dimen>
+    <dimen name="mediaplayer__information_container__margin_top">10dp</dimen>
+    <dimen name="mediaplayer__text_container__margin_left">5dp</dimen>
+    <dimen name="mediaplayer__text_container__margin_right">5dp</dimen>
+    <dimen name="row_conversation__message_media_player_margin_top">0dp</dimen>
+    <dimen name="row_conversation__message_media_player_margin_bottom">0dp</dimen>
+    <dimen name="mediaplayer__logo__padding">4dp</dimen>
+    <dimen name="mediaplayer__controls_border_width">1dp</dimen>
+
+    <dimen name="message_notification_chathead__avatar__width">36dp</dimen>
+    <dimen name="message_notification_chathead__avatar__height">36dp</dimen>
+    <dimen name="message_notification_chathead__avatar__margin_right">6dp</dimen>
+    <dimen name="message_notification_chathead__background__padding_right">16dp</dimen>
+    <dimen name="message_notification_chathead__background__height">36dp</dimen>
+    <dimen name="message_notification_chathead__username__font_size">@dimen/wire__text_size__small</dimen>
+    <dimen name="message_notification_chathead__label__margin_bottom">3dp</dimen>
+    <dimen name="message_notification_chathead__username__padding_top">4dp</dimen>
+    <dimen name="message_notification_chathead__label__font_size">@dimen/wire__text_size__small</dimen>
+
+    <dimen name="network_indicator__font__size">10dp</dimen>
+    <dimen name="network_indicator__expanded_height">30dp</dimen>
+    <dimen name="network_indicator__collapse_height">2dp</dimen>
+    <dimen name="network_indicator__visible_height">24dp</dimen>
+    <dimen name="network_indicator__padding_bottom">6dp</dimen>
+    <dimen name="network_indicator__collapse_position">22dp</dimen>
+
+    <dimen name="registration_cursor_padding">12dp</dimen>
+
+    <dimen name="new_reg__input_height">40dp</dimen>
+    <dimen name="new_reg__country_code__width">60dp</dimen>
+    <dimen name="new_reg__phone__margin_top">20dp</dimen>
+    <dimen name="new_reg__phone_number__hint_text_size">16dp</dimen>
+    <dimen name="new_reg__sign_up__indention">12dp</dimen>
+    <dimen name="new_reg__phone_number__corner_radius">4dp</dimen>
+    <dimen name="new_reg__sign_up__country_code__indention">12dp</dimen>
+    <dimen name="new_reg__sign_up__invalid_phone__circle_radius">6dp</dimen>
+    <dimen name="new_reg__back_button__text_margin_right">8dp</dimen>
+    <dimen name="new_reg__activation__indention">16dp</dimen>
+    <dimen name="new_reg__body_left_margin">28dp</dimen>
+    <dimen name="new_reg__body_right_margin">28dp</dimen>
+    <dimen name="new_reg__fake_phone_sign_in__bottom_padding">27dp</dimen>
+    <dimen name="new_reg__email_phone_sign_in__bottom_padding">26dp</dimen>
+
+    <!-- Screen height of a "large" screen. Screens smaller than this will not show logo on registration page -->
+    <dimen name="new_reg__title_ab_test__hide_logo__screen_height">580dp</dimen>
+
+    <dimen name="notification__chathead__margin_top">70dp</dimen>
+    <dimen name="notification__chathead__margin_left">14dp</dimen>
+
+    <dimen name="onboarding_hint__discover_change_profile_picture__text_size">@dimen/wire__text_size__small</dimen>
+    <dimen name="onboarding_hint__discover_change_accent_color__margin_bottom">60dp</dimen>
+    <dimen name="onboarding_hint__app_map__dismiss_button__margin_bottom">8dp</dimen>
+    <dimen name="onboarding_hint__app_map__title__margin_top">28dp</dimen>
+    <dimen name="onboarding_hint__app_map__title__font_size">20dp</dimen>
+    <dimen name="onboarding_hint__app_map__subtitle__font_size">13dp</dimen>
+    <dimen name="onboarding_hint__app_map__subtitle__spacing">18dp</dimen>
+
+    <dimen name="option_menu__font_size">20dp</dimen>
+    <dimen name="option_menu__tile_height">56dp</dimen>
+
+    <dimen name="participants__left_margin">24dp</dimen>
+    <dimen name="participants__right_margin">24dp</dimen>
+    <dimen name="participants__header__input_field__padding">8dp</dimen>
+    <dimen name="participants__header__input_field__layout_margin">16dp</dimen>
+    <dimen name="participants__subheader__font_size__one_to_one">@dimen/wire__text_size__small</dimen>
+    <dimen name="participants__subheader__margin_left">16dp</dimen>
+    <dimen name="participants__subheader__margin_right">16dp</dimen>
+    <dimen name="participants__subheader__padding">8dp</dimen>
+    <dimen name="participants__footer__padding">8dp</dimen>
+    <dimen name="participants__glyph_text_size">18dp</dimen>
+    <dimen name="participants__header_margin_glyph">8dp</dimen>
+    <dimen name="participants__chathead__width">88dp</dimen>
+    <dimen name="participants__chathead__vertical_spacing">16dp</dimen>
+    <dimen name="participants__header__top_margin">24dp</dimen>
+    <dimen name="participants__header__bottom_margin">16dp</dimen>
+    <dimen name="send_connect_request__participants__header__bottom_margin">24dp</dimen>
+    <dimen name="participants__verified_row__height">48dp</dimen>
+
+    <dimen name="people_picker__input__padding_bottom">12dp</dimen>
+    <dimen name="people_picker__input__padding_left">0dp</dimen>
+    <dimen name="people_picker__input__line_spacing_extra">6dp</dimen>
+    <dimen name="people_picker__input__line_spacing_extra__greater_than_android_sdk_19">0dp</dimen>
+    <dimen name="searchbox__height">72dp</dimen>
+    <dimen name="searchbox__height__with_toolbar">48dp</dimen>
+    <dimen name="people_picker__input__margin_right">44dp</dimen>
+    <dimen name="people_picker__error_icon__padding">16dp</dimen>
+    <dimen name="people_picker__error_icon_text__top_padding">8dp</dimen>
+    <dimen name="people_picker__input_person_token__padding_horizontal">8dp</dimen>
+    <dimen name="people_picker__input_person_token__padding_right_fix">2dp</dimen>
+    <dimen name="people_picker__input_person_token__extra_space_for_cursor">2dp</dimen>
+    <dimen name="people_picker__button__clickarea__padding">8dp</dimen>
+    <dimen name="people_picker__button__padding_bottom">16dp</dimen>
+    <dimen name="people_picker__header__padding_top">18dp</dimen>
+    <dimen name="people_picker__header__padding_bottom">10dp</dimen>
+    <dimen name="people_picker__top_users__height">96dp</dimen>
+    <dimen name="people_picker__top_users__padding_horizontal">20dp</dimen>
+    <dimen name="people_picker__chathead__width">36dp</dimen>
+    <dimen name="people_picker__chathead__glpyh">16dp</dimen>
+    <dimen name="people_picker__topgrid__chathead__total_width">68dp</dimen>
+    <dimen name="people_picker__topgrid__chathead__width">56dp</dimen>
+    <dimen name="people_picker__topgrid__chathead_footer__width">64dp</dimen>
+    <dimen name="people_picker__topgrid__chathead__horizontal_padding">4dp</dimen>
+    <dimen name="people_picker__user_row__height">52dp</dimen>
+    <dimen name="people_picker__search_result__chathead__padding_right">20dp</dimen>
+    <dimen name="people_picker__search_result__row__padding_bottom">4dp</dimen>
+    <dimen name="people_picker__search_result__row__padding_horizontal">24dp</dimen>
+    <dimen name="contactlist__user_selection_button__width">80dp</dimen>
+    <dimen name="contactlist__generic_invite_button__margin_vertical">14dp</dimen>
+    <dimen name="contactlist__user_selection_button__bottom_margin">6dp</dimen>
+    <dimen name="people_picker__border_line__height">@dimen/wire__divider__height__thin</dimen>
+
+    <dimen name="sharing_indicator__font__size">10dp</dimen>
+    <dimen name="sharing_indicator__expanded_height">30dp</dimen>
+    <dimen name="sharing_indicator__visible_height">24dp</dimen>
+    <dimen name="sharing_indicator__padding_bottom">6dp</dimen>
+    <dimen name="sharing__image_preview__title__height">52dp</dimen>
+    <dimen name="sharing__image_preview__title__fontsize">12dp</dimen>
+
+    <dimen name="single_image_message__layout__padding__top">24dp</dimen>
+    <dimen name="single_image_message__layout__padding__bottom">24dp</dimen>
+    <dimen name="single_image_message__layout__padding__left">24dp</dimen>
+    <dimen name="single_image_message__layout__padding__right">24dp</dimen>
+    <dimen name="single_image_message__header_height">70dp</dimen>
+    <dimen name="single_image_message__name__font_size">12dp</dimen>
+    <dimen name="single_image_message__date__font_size">12dp</dimen>
+    <dimen name="single_image_message__date__padding_top">3dp</dimen>
+    <dimen name="single_image_message__icon__text_size">16dp</dimen>
+    <dimen name="single_image_message__icon__padding__top">16dp</dimen>
+    <dimen name="single_image_message__icon__padding__bottom">16dp</dimen>
+    <dimen name="single_image_message__icon__padding__left">16dp</dimen>
+    <dimen name="single_image_message__icon__padding__right">16dp</dimen>
+    <dimen name="single_image_message__icon__adjust_to_top">-16dp</dimen>
+    <dimen name="single_image_message__icon__adjust_to_bottom">-16dp</dimen>
+    <dimen name="single_image_message__icon__adjust_to_left">-16dp</dimen>
+    <dimen name="single_image_message__icon__adjust_to_right">-16dp</dimen>
+
+    <dimen name="open_new_conversation__thread_list__max_top_distance">88dp</dimen>
+    <dimen name="row_conversation__missed_call__margin">11dp</dimen>
+    <dimen name="quick_reply__text_size">14dp</dimen>
+    <dimen name="quick_reply__icon_size">@dimen/wire__text_size__huge</dimen>
+    <dimen name="quick_reply__content_height">70dp</dimen>
+    <dimen name="quick_reply__padding">@dimen/wire__padding__20</dimen>
+
+    <dimen name="new_cursor_height">56dp</dimen>
+    <dimen name="cursor_height_shrinked">40dp</dimen>
+
+    <dimen name="pref_account_icon_size">24dp</dimen>
+    <dimen name="pref_account_accent_color_item_height">56dp</dimen>
+
+    <dimen name="share_location__selected_indicator_size">32dp</dimen>
+    <dimen name="share_location__selected_indicator_offset">16dp</dimen>
+    <dimen name="share_location__selected_indicator_elevation">2dp</dimen>
+    <dimen name="share_location__selected_bubble_height">32dp</dimen>
+    <dimen name="share_location__current_location_marker__size">28dp</dimen>
+    <dimen name="share_location__current_location_marker__outer_ring_radius">14dp</dimen>
+    <dimen name="share_location__current_location_marker__mid_ring_radius">10dp</dimen>
+    <dimen name="share_location__current_location_marker__inner_ring_radius">6dp</dimen>
+
+    <dimen name="progress_dot_spacing_and_width">4dp</dimen>
+
+    <dimen name="reg__tab__height">124dp</dimen>
+    <!--dimen name="reg__tab__height">224dp</dimen-->
+    <dimen name="reg__tab__height__signin">224dp</dimen>
+    <dimen name="reg__footer_height">12dp</dimen>
+    <dimen name="reg_field_margin">8dp</dimen>
+    <dimen name="reg__content_bottom_margin">40dp</dimen>
+    <dimen name="reg__signin_option__height">24dp</dimen>
+    <dimen name="reg__signin_option__height_margin">20dp</dimen>
+    <dimen name="wire_logo_margin_top">@dimen/wire__padding__26</dimen>
+    <dimen name="extend_container_height">280dp</dimen>
+    <dimen name="wire__icon_button__diameter__big">40dp</dimen>
+    <dimen name="voice_filter_height">24dp</dimen>
+    <dimen name="voice_filter_toolbar_height">72dp</dimen>
+    <dimen name="voice_filter_max_width">384dp</dimen>
+    <dimen name="voice_filter_max_height">160dp</dimen>
+    <dimen name="wave_graph_bin_width">2dp</dimen>
+    <dimen name="wave_graph_bin_space_width">1dp</dimen>
+</resources>

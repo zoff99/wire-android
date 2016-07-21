@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:title="@string/pref_options_screen_title"
+    >
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/pref_options_contacts_key"
+        android:title="@string/pref_options_contacts_title"
+        android:summary="@string/pref_options_contacts_summary"
+        />
+
+    <PreferenceCategory
+        android:key="@string/pref_options_alerts_category_key"
+        android:title="@string/pref_options_alerts_category_title"
+        android:layout="@layout/preference_category"
+        >
+
+        <com.waz.zclient.pages.main.profile.ListPreferenceWithSummary
+            android:key="@string/pref_options_sounds_key"
+            android:title="@string/pref_options_sounds_title"
+            android:dialogTitle="@string/pref_options_sounds_title"
+            android:defaultValue="@string/pref_options_sounds_default"
+            android:entries="@array/pref_options_sounds_entries"
+            android:entryValues="@array/pref_sound_option_values"
+            />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_options_vibration_key"
+            android:title="@string/pref_options_vibration_title"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/pref_options_ringtones_category_key"
+        android:title="@string/pref_options_ringtones_category_title"
+        android:layout="@layout/preference_category"
+        >
+
+        <RingtonePreference
+            android:key="@string/pref_options_ringtones_ringtone_key"
+            android:title="@string/pref_options_ringtones_ringtone_title"
+            android:ringtoneType="ringtone"
+            android:showDefault="true"
+            android:showSilent="false"
+            />
+
+        <RingtonePreference
+            android:key="@string/pref_options_ringtones_text_key"
+            android:title="@string/pref_options_ringtones_text_title"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="false"
+            />
+
+        <RingtonePreference
+            android:key="@string/pref_options_ringtones_ping_key"
+            android:title="@string/pref_options_ringtones_ping_title"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="false"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/pref_options_media_category_key"
+        android:title="@string/pref_options_media_category_title"
+        android:layout="@layout/preference_category"
+        >
+
+        <com.waz.zclient.pages.main.profile.ListPreferenceWithSummary
+            android:defaultValue="@string/pref_options_image_download_default"
+            android:dialogTitle="@string/pref_options_image_download_title"
+            android:entries="@array/pref_options_image_download_entries"
+            android:entryValues="@array/zms_image_download_values"
+            android:key="@string/pref_options_image_download_key"
+            android:title="@string/pref_options_image_download_title"
+            />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_options_giphy_key"
+            android:summary="@string/pref_options_giphy_summary"
+            android:title="@string/pref_options_giphy_title"
+            />
+
+        <Preference
+            android:defaultValue="false"
+            android:key="@string/pref_options_spotify_key"
+            android:title="@string/pref_options_spotify_title"
+            android:summary="@string/pref_options_spotify_summary"
+            android:layout="@layout/preference_bottom_padding"
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

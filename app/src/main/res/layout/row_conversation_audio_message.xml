@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<com.waz.zclient.ui.views.TouchFilterableFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="match_parent"
+                                                     android:orientation="vertical"
+    >
+
+    <com.waz.zclient.pages.main.conversation.views.row.message.views.ProgressDotsView
+        android:id="@+id/pdv__row_conversation__audio_placeholder_dots"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+    <com.waz.zclient.ui.views.TouchFilterableLinearLayout
+        android:id="@+id/tfll__audio_message_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/content__audio_message__view_height"
+        android:layout_marginLeft="@dimen/content__padding_left"
+        android:layout_marginRight="@dimen/content__padding_right"
+        android:orientation="horizontal"
+        android:background="@drawable/shape_audio_message_background"
+        >
+
+        <com.waz.zclient.views.AssetActionButton
+            android:id="@+id/aab__row_conversation__audio_button"
+            android:layout_width="@dimen/content__audio_message__button__size"
+            android:layout_height="@dimen/content__audio_message__button__size"
+            android:layout_margin="@dimen/wire__padding__12"
+            android:layout_gravity="center"
+            android:textSize="@dimen/content__audio_message__glyph_size"
+            android:textColor="@color/white"
+            android:text="@string/glyph__play"
+            android:background="@drawable/selector__icon_button__background__video_message"
+            />
+
+        <com.waz.zclient.ui.text.TypefaceTextView
+            android:id="@+id/ttv__row_conversation__audio_duration"
+            android:layout_width="@dimen/content__audio_message__duration_width"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|left"
+            app:font="@string/wire__typeface__light"
+            style="?audioMessageDuration"
+            />
+
+        <SeekBar
+            android:id="@+id/sb__audio_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+    </com.waz.zclient.ui.views.TouchFilterableLinearLayout>
+
+</com.waz.zclient.ui.views.TouchFilterableFrameLayout>

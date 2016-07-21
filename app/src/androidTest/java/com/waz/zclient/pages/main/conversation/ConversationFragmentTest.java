@@ -1,0 +1,228 @@
+/**
+ * Wire
+ * Copyright (C) 2016 Wire Swiss GmbH
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.waz.zclient.pages.main.conversation;
+
+import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
+import com.waz.api.IConversation;
+import com.waz.zclient.MainTestActivity;
+import com.waz.zclient.R;
+import com.waz.zclient.controllers.calling.ICallingController;
+import com.waz.zclient.pages.main.conversation.controller.IConversationScreenController;
+import com.waz.zclient.testutils.CustomViewAssertions;
+import com.waz.zclient.testutils.FragmentTest;
+import com.waz.zclient.testutils.MockHelper;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.waz.zclient.testutils.CustomViewAssertions.isVisible;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(AndroidJUnit4.class)
+public class ConversationFragmentTest extends FragmentTest<MainTestActivity> {
+
+    public ConversationFragmentTest() {
+        super(MainTestActivity.class);
+    }
+
+    @Test
+    public void assertToolbarVisibleInOneToOneConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.t_conversation_toolbar)).check(isVisible());
+    }
+
+    @Test
+    public void assertToolbarVisibleInGroupConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.GROUP);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.t_conversation_toolbar)).check(isVisible());
+    }
+
+    @Test
+    public void assertToolbarOneToOneParticipants() {
+        String conversationName = "ConversationName";
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getName()).thenReturn(conversationName);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+
+        IConversationScreenController mockScreenController = activity.getControllerFactory().getConversationScreenController();
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withText(conversationName)).perform(click());
+        verify(mockScreenController).showParticipants(any(View.class), anyBoolean());
+    }
+
+    @Test
+    public void assertAudioCallInitatedInOneToOneConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+
+        ICallingController mockCallingController = activity.getControllerFactory().getCallingController();
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.action_audio_call)).check(isVisible());
+        onView(withId(R.id.action_audio_call)).perform(click());
+        verify(mockCallingController).startCall(false);
+    }
+
+    @Test
+    public void assertAudioCallInitatedInGroupConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.GROUP);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+
+        ICallingController mockCallingController = activity.getControllerFactory().getCallingController();
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.action_audio_call)).check(isVisible());
+        onView(withId(R.id.action_audio_call)).perform(click());
+        verify(mockCallingController).startCall(false);
+    }
+
+    @Test
+    public void assertVideoCallInitatedInOneToOneConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+
+        ICallingController mockCallingController = activity.getControllerFactory().getCallingController();
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.action_video_call)).check(isVisible());
+        onView(withId(R.id.action_video_call)).perform(click());
+        verify(mockCallingController).startCall(true);
+    }
+
+    @Test
+    public void assertNoVideoCallButtonInGroupConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.GROUP);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.action_video_call)).check(CustomViewAssertions.isNull());
+    }
+
+    @Test
+    public void assertNoVideoCallButtonInNonActiveConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(false);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.action_video_call)).check(CustomViewAssertions.isNull());
+    }
+
+    @Test
+    public void assertNoAudioCallButtonInNonActiveConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(false);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.action_audio_call)).check(CustomViewAssertions.isNull());
+    }
+
+    @Test
+    public void assertFileUploadIconVisibleInOneToOneConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+        when(mockConversation.isActive()).thenReturn(true);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.cursor_menu_item_file)).check(isVisible());
+    }
+
+    @Test
+    public void assertFileUploadIconVisibleInGroupConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.GROUP);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+        when(mockConversation.isActive()).thenReturn(true);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.cursor_menu_item_file)).check(isVisible());
+    }
+
+    @Test
+    public void assertAudioMessageIconVisibleInOneToOneConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.ONE_TO_ONE);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+        when(mockConversation.isActive()).thenReturn(true);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.cursor_menu_item_audio_message)).check(isVisible());
+    }
+
+    @Test
+    public void assertAudioMessageIconVisibleInGroupConversation() throws InterruptedException {
+        IConversation mockConversation = mock(IConversation.class);
+        when(mockConversation.getType()).thenReturn(IConversation.Type.GROUP);
+        when(mockConversation.isMemberOfConversation()).thenReturn(true);
+        when(mockConversation.isActive()).thenReturn(true);
+
+        MockHelper.setupConversationMocks(mockConversation, activity);
+        attachFragment(ConversationFragment.newInstance(), ConversationFragment.TAG);
+
+        onView(withId(R.id.cursor_menu_item_audio_message)).check(isVisible());
+    }
+}

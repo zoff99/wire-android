@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<com.waz.zclient.ui.views.TouchFilterableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                      xmlns:sending="http://schemas.android.com/apk/res-auto"
+                                                      android:layout_width="match_parent"
+                                                      android:layout_height="match_parent"
+                                                      android:orientation="vertical"
+    >
+
+    <FrameLayout
+        android:id="@+id/fl__single_image_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <FrameLayout
+            android:id="@+id/fl__row_conversation__message_image_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/content__padding_left"
+            android:paddingRight="@dimen/content__padding_right"
+            >
+
+            <com.waz.zclient.pages.main.conversation.views.row.message.views.BlockingImageView
+                android:id="@+id/iv__row_conversation__message_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="left"
+                android:layout_marginBottom="@dimen/content__image__polka__loading_bar__total_height"
+                android:adjustViewBounds="false"
+                android:background="@null"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                />
+
+            <com.waz.zclient.pages.main.conversation.views.row.message.views.BlockingImageView
+                android:id="@+id/iv__row_conversation__message_polkadots"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="left"
+                android:layout_marginBottom="@dimen/content__image__polka__loading_bar__total_height"
+                android:adjustViewBounds="false"
+                android:background="@null"
+                android:scaleType="fitXY"
+                />
+
+            <!-- Polka dot image preview loading indicator -->
+            <com.waz.zclient.views.LoadingIndicatorView
+                android:id="@+id/lbv__row_conversation__message_polkadots"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/loading_bar__stroke_width"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/content__image__polka__loading_bar__margin_top"
+                />
+
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:id="@+id/fl__row_conversation__message_error_container"
+            android:layout_width="@dimen/content__image__progress_size"
+            android:layout_height="@dimen/content__image__progress_size"
+            android:layout_gravity="right|bottom"
+            >
+
+            <com.waz.zclient.views.SendingAnimationView
+                android:id="@+id/v__row_conversation__pending"
+                style="?messageStreamUnsentIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                sending:backgroundColor="?messageStreamUnsentIndicatorBackground"
+                sending:backgroundCircleRadius="@dimen/content__message__unsend_indicator_background_radius"
+                sending:circlePadding="@dimen/content__image__progress_circle_padding"
+                sending:circleRadius="@dimen/content__message__error_radius"
+                sending:pendingDuration="@integer/content__image__progress_duration"
+                sending:pendingStop="@integer/content__image__progress_pending_stop"
+                />
+
+            <com.waz.zclient.ui.text.GlyphTextView
+                android:id="@+id/v__row_conversation__error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/text__secondary_light"
+                android:text="@string/glyph__redo"
+                android:textSize="@dimen/content__message__error_glyph_size"
+                />
+
+        </FrameLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll__conversation_row__image__wifi_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/wire__padding__small"
+        >
+
+        <com.waz.zclient.ui.text.TypefaceTextView
+            style="?messageStreamSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/advanced_image_download_wifi_info"
+            sending:font="@string/wire__typeface__light"
+            />
+
+        <com.waz.zclient.ui.text.TypefaceTextView
+            style="?messageStreamSubtitle"
+            android:id="@+id/ttv__conversation_row__image__change_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/wire__padding__small"
+            android:gravity="center"
+            android:text="@string/change_settings"
+            android:textAllCaps="true"
+            android:textColor="@color/accent_blue"
+            />
+
+    </LinearLayout>
+
+</com.waz.zclient.ui.views.TouchFilterableLinearLayout>

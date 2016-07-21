@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Wire
+    Copyright (C) 2016 Wire Swiss GmbH
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:title="@string/pref_developer_screen_title"
+    >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/pref_dev_status_bar_key"
+        android:title="@string/pref_dev_status_bar_title"
+        android:summary="@string/pref_dev_status_bar_summary"
+        />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/pref_dev_avs_post_session_id_key"
+        android:title="@string/pref_dev_avs_post_session_id_title"
+        android:summary="@string/pref_dev_avs_post_session_id_summary"
+        />
+
+    <Preference
+        android:key="@string/pref_dev_avs_last_call_session_id_key"
+        android:title="@string/pref_dev_avs_last_call_session_id_title"
+        android:summary="@string/pref_dev_status_bar_summary"
+        />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/pref_dev_auto_answer_call_key"
+        android:title="@string/pref_dev_auto_answer_call_title"
+        android:summary="@string/pref_dev_auto_answer_call_summary"
+        />
+
+</PreferenceScreen>
