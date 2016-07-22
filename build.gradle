@@ -78,10 +78,10 @@ ext {
     // Release version number must be like this X.0(.Y)
     zMessagingReleaseVersion = System.getenv("ZMESSAGING_VERSION") ?: '75.0.274@aar'
 
-    avsVersion = System.getenv("AVS_VERSION") ?: '2.8.4@aar'
+    avsVersion = System.getenv("AVS_VERSION") ?: '2.8.39@aar'
     avsInternalVersion = avsVersion //leave this here in case we want to test specific AVS versions on internal
     avsName = System.getenv("AVS_NAME") ?: 'avs'
-    avsGroup = System.getenv("AVS_GROUP") ?: 'com.wire.avs'
+    avsGroup = System.getenv("AVS_GROUP") ?: 'com.wire'
 
     deps = [
             scala               : "org.scala-lang:scala-library:$scalaVersion",
