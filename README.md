@@ -36,8 +36,8 @@ In order to build Wire for Android locally, it is necessary to install the follo
 
 These steps will build only the Wire client UI, pulling in all other Wire frameworks from Maven. If you want to modify the source/debug other Wire frameworks, you can check project dependencies and build other wire projects separately. The most interresting projects to check are: 
 
-- [zmessaging-android](https://github.com/wireapp/zmessaging-android)
-- [avs](https://github.com/wireapp/avs)
+- [Sync Engine](https://github.com/wireapp/wire-android-sync-engine)
+- [Audio Video Signaling](https://github.com/wireapp/avs)
 - [generic-message-proto](https://github.com/wireapp/generic-message-proto)
 - [wiretranslations-android](https://github.com/wireapp/wiretranslations-android)
 
