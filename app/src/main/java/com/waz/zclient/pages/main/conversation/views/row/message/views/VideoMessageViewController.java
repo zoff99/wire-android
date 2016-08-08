@@ -36,11 +36,13 @@ import com.waz.api.AssetStatus;
 import com.waz.api.ImageAsset;
 import com.waz.api.LoadHandle;
 import com.waz.api.Message;
+import com.waz.api.NetworkMode;
 import com.waz.api.ProgressIndicator;
 import com.waz.zclient.R;
 import com.waz.zclient.controllers.selection.MessageActionModeController;
 import com.waz.zclient.core.controllers.tracking.events.media.PlayedVideoMessageEvent;
 import com.waz.zclient.core.api.scala.ModelObserver;
+import com.waz.zclient.core.stores.network.DefaultNetworkAction;
 import com.waz.zclient.pages.main.conversation.views.MessageViewsContainer;
 import com.waz.zclient.pages.main.conversation.views.row.message.MessageViewController;
 import com.waz.zclient.pages.main.conversation.views.row.separator.Separator;
@@ -312,27 +314,29 @@ public class VideoMessageViewController extends MessageViewController implements
                     messageViewsContainer.isTornDown()) {
                     return;
                 }
-                if (messageViewsContainer.getStoreFactory().getNetworkStore().hasInternetConnection()) {
-                    asset.getContentUri(new Asset.LoadCallback<Uri>() {
-                        @Override
-                        public void onLoaded(Uri uri) {
-                            if (messageViewsContainer == null || messageViewsContainer.isTornDown()) {
-                                return;
-                            }
-                            messageViewsContainer.getControllerFactory().getTrackingController().tagEvent(new PlayedVideoMessageEvent(
-                                (int) asset.getDuration().getSeconds(),
-                                !message.getUser().isMe(),
-                                getConversationTypeString()));
-                            final Intent intent = AssetUtils.getOpenFileIntent(uri, asset.getMimeType());
-                            context.startActivity(intent);
-                        }
 
-                        @Override
-                        public void onLoadFailed() {}
-                    });
-                } else {
-                    messageViewsContainer.getStoreFactory().getNetworkStore().notifyNetworkAccessFailed();
-                }
+                messageViewsContainer.getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new DefaultNetworkAction() {
+                    @Override
+                    public void execute(NetworkMode networkMode) {
+                        asset.getContentUri(new Asset.LoadCallback<Uri>() {
+                            @Override
+                            public void onLoaded(Uri uri) {
+                                if (messageViewsContainer == null || messageViewsContainer.isTornDown()) {
+                                    return;
+                                }
+                                messageViewsContainer.getControllerFactory().getTrackingController().tagEvent(new PlayedVideoMessageEvent(
+                                    (int) asset.getDuration().getSeconds(),
+                                    !message.getUser().isMe(),
+                                    getConversationTypeString()));
+                                final Intent intent = AssetUtils.getOpenFileIntent(uri, asset.getMimeType());
+                                context.startActivity(intent);
+                            }
+
+                            @Override
+                            public void onLoadFailed() {}
+                        });
+                    }
+                });
                 break;
             case DOWNLOAD_DONE:
                 asset.getContentUri(new Asset.LoadCallback<Uri>() {

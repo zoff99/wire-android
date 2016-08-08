@@ -103,7 +103,6 @@ public class LinkPreviewViewController extends MessageViewController implements 
         previewImageContainerView = ViewUtils.getView(view.getLayout(),
                                                       R.id.fl__row_conversation__link_preview__image_container);
         previewImageContainerView.setVisibility(View.GONE);
-        previewImageAssetView.setVisibility(View.GONE);
         previewImageAssetView.setBitmapLoadedCallback(this);
 
         linkPrevieContainerView.setOnClickListener(this);
@@ -152,8 +151,8 @@ public class LinkPreviewViewController extends MessageViewController implements 
     public void recycle() {
         previewImageContainerView.setVisibility(View.GONE);
         progressDotsView.setVisibility(View.VISIBLE);
-        previewImageAssetView.setVisibility(View.GONE);
         messageObserver.clear();
+        previewImageAssetView.clearImage();
         imageAssetModelObserver.clear();
         urlTextView.setText("");
         titleTextView.setText("");
@@ -184,8 +183,10 @@ public class LinkPreviewViewController extends MessageViewController implements 
     }
 
     @Override
-    public void onBitmapLoadFinished() {
-        progressDotsView.setVisibility(View.GONE);
-        previewImageAssetView.setVisibility(View.VISIBLE);
+    public void onBitmapLoadFinished(boolean bitmapLoaded) {
+        previewImageContainerView.setVisibility(bitmapLoaded ? View.VISIBLE : View.GONE);
+        if (bitmapLoaded) {
+            progressDotsView.setVisibility(View.GONE);
+        }
     }
 }

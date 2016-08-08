@@ -15,31 +15,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.waz.zclient.pages.main.profile.camera.manager;
+package com.waz.zclient.camera;
 
 import android.hardware.Camera;
-import timber.log.Timber;
+import android.text.TextUtils;
 
-public enum CameraDirection {
+public enum FlashMode {
 
-    BACK_FACING(Camera.CameraInfo.CAMERA_FACING_BACK),
-    FRONT_FACING(Camera.CameraInfo.CAMERA_FACING_FRONT),
-    UNKNOWN(-1);
+    /*
+        off, auto, on, torch, red-eye
+     */
+    OFF(Camera.Parameters.FLASH_MODE_OFF),
+    AUTO(Camera.Parameters.FLASH_MODE_AUTO),
+    ON(Camera.Parameters.FLASH_MODE_ON),
+    RED_EYE(Camera.Parameters.FLASH_MODE_RED_EYE),
+    TORCH(Camera.Parameters.FLASH_MODE_TORCH);
 
-    private static final String TAG = CameraDirection.class.getName();
-    public final int id;
+    public String mode;
 
-    CameraDirection(int id) {
-        this.id = id;
+    FlashMode(String mode) {
+        this.mode = mode;
     }
 
-    public static CameraDirection getDirection(int id) {
-        for (CameraDirection direction : CameraDirection.values()) {
-            if (direction.id == id) {
-                return direction;
+    public static FlashMode get(String mode) {
+        if (TextUtils.isEmpty(mode)) {
+            return OFF;
+        }
+
+        for (int i = 0; i < FlashMode.values().length; i++) {
+            FlashMode state = FlashMode.values()[i];
+            if (mode.equals(state.mode)) {
+                return state;
             }
         }
-        Timber.e("Unknown camera direction id: %d", id);
-        return UNKNOWN;
+
+        return OFF;
     }
 }

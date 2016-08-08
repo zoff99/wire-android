@@ -18,10 +18,10 @@
 package com.waz.zclient
 
 import android.os.PowerManager
-import com.waz.api.VoiceChannelState._
-import com.waz.model.VoiceChannelData
-import com.waz.service.ZMessaging
-import com.waz.utils.events.Signal
+import _root_.com.waz.api.VoiceChannelState._
+import _root_.com.waz.model.VoiceChannelData
+import _root_.com.waz.service.ZMessaging
+import _root_.com.waz.utils.events.Signal
 
 class GlobalCallingController(cxt: WireContext)(implicit inj: Injector) extends Injectable {
 

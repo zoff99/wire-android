@@ -73,15 +73,21 @@ ext {
     playServicesVersion = '7.8.+'
 
     audioVersion = System.getenv("AUDIO_VERSION") ?: '1.195.0@aar'
-    zMessagingDevVersionBase = '75.1119'
+    zMessagingDevVersionBase = '76.1146'
     zMessagingDevVersion = "${zMessagingDevVersionBase}@aar"
     // Release version number must be like this X.0(.Y)
-    zMessagingReleaseVersion = System.getenv("ZMESSAGING_VERSION") ?: '75.0.274@aar'
+    zMessagingReleaseVersion = System.getenv("ZMESSAGING_VERSION") ?: '76.0.282@aar'
 
-    avsVersion = System.getenv("AVS_VERSION") ?: '2.8.39@aar'
+    avsVersion = '2.8.4@aar'
     avsInternalVersion = avsVersion //leave this here in case we want to test specific AVS versions on internal
-    avsName = System.getenv("AVS_NAME") ?: 'avs'
-    avsGroup = System.getenv("AVS_GROUP") ?: 'com.wire'
+    avsName = 'avs'
+    avsGroup = 'com.wire.avs'
+
+    // proprietary avs artifact config
+    customAvsVersion = '2.7.26@aar'
+    customAvsInternalVersion = customAvsVersion
+    customAvsName = 'avs'
+    customAvsGroup = 'com.wearezeta.avs'
 
     deps = [
             scala               : "org.scala-lang:scala-library:$scalaVersion",
@@ -175,8 +181,8 @@ allprojects {
     }
 }
 
-if (project.file('repositories.gradle').exists()) {
-    apply from: "repositories.gradle"
+if (project.file('user.gradle').exists()) {
+    apply from: "user.gradle"
 }
 
 

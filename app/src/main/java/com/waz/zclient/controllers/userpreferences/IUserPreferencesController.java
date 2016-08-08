@@ -19,7 +19,7 @@ package com.waz.zclient.controllers.userpreferences;
 
 import android.support.annotation.IntDef;
 import com.waz.annotations.Controller;
-import com.waz.zclient.pages.main.profile.camera.manager.CameraDirection;
+import com.waz.zclient.camera.CameraFacing;
 
 @Controller
 public interface IUserPreferencesController {
@@ -38,9 +38,9 @@ public interface IUserPreferencesController {
 
     boolean showContactsDialog();
 
-    void setRecentCameraDirection(CameraDirection cameraDirection);
+    void setRecentCameraDirection(CameraFacing cameraFacing);
 
-    CameraDirection getRecentCameraDirection();
+    CameraFacing getRecentCameraDirection();
 
     void setReferralToken(String token);
 

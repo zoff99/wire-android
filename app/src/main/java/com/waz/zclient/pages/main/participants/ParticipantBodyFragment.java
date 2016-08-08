@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import com.waz.api.CommonConnections;
 import com.waz.api.IConversation;
 import com.waz.api.MessagesList;
+import com.waz.api.NetworkMode;
 import com.waz.api.OtrClient;
 import com.waz.api.User;
 import com.waz.api.UsersList;
@@ -367,9 +368,9 @@ public class ParticipantBodyFragment extends BaseFragment<ParticipantBodyFragmen
 
             @Override
             public void onRightActionClicked() {
-                getStoreFactory().getNetworkStore().doIfNetwork(new NetworkAction() {
+                getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new NetworkAction() {
                     @Override
-                    public void execute() {
+                    public void execute(NetworkMode networkMode) {
                         if (!conversation.isMemberOfConversation()) {
                             return;
                         }
@@ -584,9 +585,9 @@ public class ParticipantBodyFragment extends BaseFragment<ParticipantBodyFragmen
                                                        user.getConnectionStatus() != User.ConnectionStatus.BLOCKED);
                     }
                 } else {
-                    getStoreFactory().getNetworkStore().doIfNetwork(new NetworkAction() {
+                    getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new NetworkAction() {
                         @Override
-                        public void execute() {
+                        public void execute(NetworkMode networkMode) {
                             if (user.isMe()) {
                                 showLeaveConfirmation(getStoreFactory().getConversationStore().getCurrentConversation());
                             } else {

@@ -15,13 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.waz.zclient.pages.main.profile.camera.controls;
+package com.waz.zclient.camera;
 
-import com.waz.zclient.pages.main.profile.camera.manager.CameraDirection;
-import com.waz.zclient.pages.main.profile.camera.manager.FlashState;
+import android.hardware.Camera;
 
-public interface CameraTopControlCallback {
-    void loadCamera(CameraDirection cameraDirection);
-    FlashState getSavedFlashState();
-    void setSavedFlashState(FlashState state);
+public enum CameraFacing {
+
+    BACK(Camera.CameraInfo.CAMERA_FACING_BACK),
+    FRONT(Camera.CameraInfo.CAMERA_FACING_FRONT);
+
+    public int facing;
+
+    CameraFacing(int facing) {
+        this.facing = facing;
+    }
+
+    public static CameraFacing getFacing(int f) {
+        for (CameraFacing facing : CameraFacing.values()) {
+            if (facing.facing == f) {
+                return facing;
+            }
+        }
+        throw new IllegalArgumentException(
+            "Not a proper Camera Direction facing value. Use only the Enum");
+    }
 }

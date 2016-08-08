@@ -33,9 +33,9 @@ import com.waz.service.ZMessaging;
 import com.waz.zclient.api.scala.ScalaStoreFactory;
 import com.waz.zclient.controllers.DefaultControllerFactory;
 import com.waz.zclient.controllers.IControllerFactory;
+import com.waz.zclient.controllers.notifications.AppTrackingEventsHandler;
 import com.waz.zclient.controllers.notifications.CallingTrackingEventsHandler;
 import com.waz.zclient.controllers.notifications.INotificationsController;
-import com.waz.zclient.controllers.notifications.AppTrackingEventsHandler;
 import com.waz.zclient.core.stores.IStoreFactory;
 import com.waz.zclient.ui.text.TypefaceFactory;
 import com.waz.zclient.ui.text.TypefaceLoader;
@@ -155,7 +155,7 @@ public class ZApplication extends WireApplication implements NotificationsHandle
     public CallingEventsHandler getCallingEventsHandler() {
         if (callingEventsHandler == null) {
             callingEventsHandler = new CallingTrackingEventsHandler(getStoreFactory().getZMessagingApiStore().getApi(),
-                                                                    getStoreFactory().getMediaStore(),
+                                                                    getStoreFactory(),
                                                                     getControllerFactory().getVibratorController(),
                                                                     getControllerFactory().getTrackingController());
         }

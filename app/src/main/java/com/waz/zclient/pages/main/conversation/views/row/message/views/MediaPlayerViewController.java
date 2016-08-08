@@ -34,6 +34,7 @@ import com.waz.api.KindOfMedia;
 import com.waz.api.LoadHandle;
 import com.waz.api.MediaAsset;
 import com.waz.api.Message;
+import com.waz.api.NetworkMode;
 import com.waz.api.UpdateListener;
 import com.waz.zclient.R;
 import com.waz.zclient.controllers.mediaplayer.DefaultMediaPlayer;
@@ -41,6 +42,7 @@ import com.waz.zclient.controllers.mediaplayer.MediaPlayerState;
 import com.waz.zclient.controllers.selection.MessageActionModeController;
 import com.waz.zclient.controllers.streammediaplayer.IStreamMediaPlayerController;
 import com.waz.zclient.controllers.streammediaplayer.StreamMediaPlayerObserver;
+import com.waz.zclient.core.stores.network.DefaultNetworkAction;
 import com.waz.zclient.core.stores.network.NetworkStoreObserver;
 import com.waz.zclient.pages.main.conversation.views.MessageViewsContainer;
 import com.waz.zclient.pages.main.conversation.views.row.message.RetryMessageViewController;
@@ -136,7 +138,7 @@ public abstract class MediaPlayerViewController extends RetryMessageViewControll
     protected void onSetMessage(Separator separator) {
         super.onSetMessage(separator);
         textWithTimestamp.setMessage(message);
-        messageViewsContainer.getStoreFactory().getNetworkStore().addNetworkControllerObserver(this);
+        messageViewsContainer.getStoreFactory().getNetworkStore().addNetworkStoreObserver(this);
         getPlayerController().addStreamMediaObserver(this);
         resetMediaPlayerView(R.string.mediaplayer__artist__placeholder, getSource());
         mediaPlayerView.setMediaPlayerListener(this);
@@ -174,7 +176,7 @@ public abstract class MediaPlayerViewController extends RetryMessageViewControll
         mediaPlayerView.setSeekBarEnabled(false);
         if (getPlayerController() != null) {
             getPlayerController().removeStreamMediaObserver(this);
-            messageViewsContainer.getStoreFactory().getNetworkStore().removeNetworkControllerObserver(this);
+            messageViewsContainer.getStoreFactory().getNetworkStore().removeNetworkStoreObserver(this);
         }
         resetMediaPlayerView(R.string.mediaplayer__artist__placeholder, getSource());
         if (loadHandle != null) {
@@ -339,11 +341,12 @@ public abstract class MediaPlayerViewController extends RetryMessageViewControll
             return;
         }
         unscheduleTimeUpdate();
-        if (!messageViewsContainer.getStoreFactory().getNetworkStore().hasInternetConnection()) {
-            messageViewsContainer.getStoreFactory().getNetworkStore().notifyNetworkAccessFailed();
-            return;
-        }
-        showError();
+        messageViewsContainer.getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new DefaultNetworkAction() {
+            @Override
+            public void execute(NetworkMode networkMode) {
+                showError();
+            }
+        });
     }
 
     @Override
@@ -457,7 +460,7 @@ public abstract class MediaPlayerViewController extends RetryMessageViewControll
 
 
     @Override
-    public void onConnectivityChange(boolean hasInternet) {
+    public void onConnectivityChange(boolean hasInternet, boolean isServerError) {
         if (messageViewsContainer == null ||
             messageViewsContainer.isTornDown()) {
             return;
@@ -472,7 +475,7 @@ public abstract class MediaPlayerViewController extends RetryMessageViewControll
     }
 
     @Override
-    public void onNetworkAccessFailed() { }
+    public void onNoInternetConnection(boolean isServerError) { }
 
     @Override
     public void onAccentColorHasChanged(Object sender, int color) {
@@ -500,12 +503,14 @@ public abstract class MediaPlayerViewController extends RetryMessageViewControll
             getPlayerController() == null) {
             return;
         }
-        if (!messageViewsContainer.getStoreFactory().getNetworkStore().hasInternetConnection()) {
-            messageViewsContainer.getStoreFactory().getNetworkStore().notifyNetworkAccessFailed();
-            return;
-        }
-        mediaPlayerView.setAllowControl(false);
-        getPlayerController().play(message, mediaAsset);
+
+        messageViewsContainer.getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new DefaultNetworkAction() {
+            @Override
+            public void execute(NetworkMode networkMode) {
+                mediaPlayerView.setAllowControl(false);
+                getPlayerController().play(message, mediaAsset);
+            }
+        });
     }
 
     protected void pause() {

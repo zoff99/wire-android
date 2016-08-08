@@ -42,6 +42,7 @@ import com.waz.api.CommonConnections;
 import com.waz.api.ConversationsList;
 import com.waz.api.IConversation;
 import com.waz.api.MessagesList;
+import com.waz.api.NetworkMode;
 import com.waz.api.Self;
 import com.waz.api.SyncState;
 import com.waz.api.User;
@@ -68,6 +69,7 @@ import com.waz.zclient.core.stores.connect.ConnectStoreObserver;
 import com.waz.zclient.core.stores.connect.IConnectStore;
 import com.waz.zclient.core.stores.conversation.ConversationChangeRequester;
 import com.waz.zclient.core.stores.conversation.ConversationStoreObserver;
+import com.waz.zclient.core.stores.network.NetworkAction;
 import com.waz.zclient.core.stores.profile.ProfileStoreObserver;
 import com.waz.zclient.pages.main.MainPhoneFragment;
 import com.waz.zclient.pages.main.MainTabletFragment;
@@ -749,35 +751,12 @@ public class MainActivity extends BaseActivity implements MainPhoneFragment.Cont
     }
 
     private void handleOnStartCall(final boolean withVideo) {
-
-        if (!getStoreFactory().getNetworkStore().hasInternetConnection()) {
-            cannotStartNoInternet();
-        } else if (PhoneUtils.getPhoneState(this) == PhoneState.IDLE && getActiveVoiceChannels().hasOngoingCall()) {
+        if (PhoneUtils.getPhoneState(this) == PhoneState.IDLE && getActiveVoiceChannels().hasOngoingCall()) {
             cannotStartAlreadyHaveVoiceActive(withVideo);
         } else if (PhoneUtils.getPhoneState(this) != PhoneState.IDLE) {
             cannotStartGSM();
-        } else if (withVideo && !getStoreFactory().getNetworkStore().hasInternetConnectionWith3GAndHigher()) {
-            // Show alert about slow connection but still allow user to place a video call
-            ViewUtils.showAlertDialog(this,
-                                      R.string.calling__slow_connection__title,
-                                      R.string.calling__video_call__slow_connection__message,
-                                      R.string.calling__slow_connection__button,
-                                      new DialogInterface.OnClickListener() {
-                                          @Override
-                                          public void onClick(DialogInterface dialogInterface, int i) {
-                                              startCall(true);
-                                          }
-                                      },
-                                      true);
-        } else if (!getStoreFactory().getNetworkStore().hasInternetConnectionWith2GAndHigher()) {
-            ViewUtils.showAlertDialog(this,
-                                      R.string.calling__slow_connection__title,
-                                      R.string.calling__slow_connection__message,
-                                      R.string.calling__slow_connection__button,
-                                      null,
-                                      true);
         } else {
-            startCall(withVideo);
+            startCallIfInternet(withVideo);
         }
     }
 
@@ -855,17 +834,55 @@ public class MainActivity extends BaseActivity implements MainPhoneFragment.Cont
                                   true);
     }
 
-    private void cannotStartNoInternet() {
-        getStoreFactory().getNetworkStore().notifyNetworkAccessFailed();
-        ViewUtils.showAlertDialog(this,
-                                  R.string.alert_dialog__no_network__header,
-                                  R.string.calling__call_drop__message,
-                                  R.string.alert_dialog__confirmation,
-                                  new DialogInterface.OnClickListener() {
-                                      @Override
-                                      public void onClick(DialogInterface dialog, int which) {
-                                      }
-                                  }, false);
+    private void startCallIfInternet(final boolean withVideo) {
+        getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new NetworkAction() {
+            @Override
+            public void execute(NetworkMode networkMode) {
+                switch (networkMode) {
+                    case _2G:
+                        ViewUtils.showAlertDialog(MainActivity.this,
+                                                  R.string.calling__slow_connection__title,
+                                                  R.string.calling__slow_connection__message,
+                                                  R.string.calling__slow_connection__button,
+                                                  null,
+                                                  true);
+                        break;
+                    case EDGE:
+                        if (withVideo) {
+                            ViewUtils.showAlertDialog(MainActivity.this,
+                                                      R.string.calling__slow_connection__title,
+                                                      R.string.calling__video_call__slow_connection__message,
+                                                      R.string.calling__slow_connection__button,
+                                                      new DialogInterface.OnClickListener() {
+                                                          @Override
+                                                          public void onClick(DialogInterface dialogInterface, int i) {
+                                                              startCall(true);
+                                                          }
+                                                      },
+                                                      true);
+                            break;
+                        }
+                    case _3G:
+                    case _4G:
+                    case WIFI:
+                        startCall(withVideo);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNoNetwork() {
+                ViewUtils.showAlertDialog(MainActivity.this,
+                                          R.string.alert_dialog__no_network__header,
+                                          R.string.calling__call_drop__message,
+                                          R.string.alert_dialog__confirmation,
+                                          new DialogInterface.OnClickListener() {
+                                              @Override
+                                              public void onClick(DialogInterface dialog, int which) {
+                                              }
+                                          }, false);
+            }
+        });
     }
 
     @Override

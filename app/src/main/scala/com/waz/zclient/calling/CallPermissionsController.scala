@@ -17,13 +17,9 @@
  */
 package com.waz.zclient.calling
 
-import android.content.{DialogInterface, Intent}
-import android.net.Uri
-import android.provider.Settings
 import com.waz.api.VoiceChannelState.OTHER_CALLING
 import com.waz.model.ConvId
 import com.waz.zclient._
-import com.waz.zclient.utils.ViewUtils
 import timber.log.Timber
 
 /**
@@ -59,37 +55,21 @@ class CallPermissionsController(implicit inj: Injector, cxt: WireContext) extend
   }
 
   def startCall(convId: ConvId, withVideo: Boolean): Unit = {
-    permissionsController.requiring(if (withVideo) Set(Camera, RecordAudio) else Set(RecordAudio)) {
+    permissionsController.requiring(if (withVideo) Set(CameraPermission, RecordAudioPermission) else Set(RecordAudioPermission)) {
       voiceService.currentValue.foreach(_.foreach(_.joinVoiceChannel(convId, withVideo)))
-    } { act =>
-      showDialog(act, withVideo)
-    }
+    }(R.string.calling__cannot_start__title,
+      if (withVideo) R.string.calling__cannot_start__no_video_permission__message else R.string.calling__cannot_start__no_permission__message)
   }
 
   def acceptCall(): Unit = {
     (videoCall.currentValue.getOrElse(false), currentConvAndVoiceService.currentValue.getOrElse(None)) match {
       case (withVideo, Some((vcs, id))) =>
-        permissionsController.requiring(if (withVideo) Set(Camera, RecordAudio) else Set(RecordAudio)) {
+        permissionsController.requiring(if (withVideo) Set(CameraPermission, RecordAudioPermission) else Set(RecordAudioPermission)) {
           vcs.joinVoiceChannel(id, withVideo)
-        } { act =>
-          showDialog(act, withVideo, vcs.silenceVoiceChannel(id))
-        }
+        }(R.string.calling__cannot_start__title,
+          if (withVideo) R.string.calling__cannot_start__no_video_permission__message else R.string.calling__cannot_start__no_permission__message,
+          vcs.silenceVoiceChannel(id))
       case _ =>
     }
-  }
-
-  def showDialog(act: PermissionActivity, withVideo: Boolean, onDismiss: => Unit = ()): Unit = {
-    ViewUtils.showAlertDialog(act, R.string.calling__cannot_start__title, if (withVideo) R.string.calling__cannot_start__no_video_permission__message else R.string.calling__cannot_start__no_permission__message,
-      R.string.calling__cannot_start__button, R.string.calling__cannot_start__button_settings,
-      new DialogInterface.OnClickListener() {
-        override def onClick(dialog: DialogInterface, which: Int) = onDismiss
-      },
-      new DialogInterface.OnClickListener() {
-        override def onClick(dialog: DialogInterface, which: Int) = {
-          val intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", act.getPackageName(), null))
-          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          act.startActivity(intent)
-        }
-      });
   }
 }

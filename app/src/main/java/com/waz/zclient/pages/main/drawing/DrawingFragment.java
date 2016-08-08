@@ -310,7 +310,8 @@ public class DrawingFragment extends BaseFragment<DrawingFragment.Container> imp
                     if (!drawingCanvasView.isEmpty()) {
                         getStoreFactory().getConversationStore().sendMessage(getFinalSketchImage());
                         TrackingUtils.onSentSketchMessage(getControllerFactory().getTrackingController(),
-                                                          getStoreFactory().getConversationStore().getCurrentConversation());
+                                                          getStoreFactory().getConversationStore().getCurrentConversation(),
+                                                          drawingDestination);
 
                         getControllerFactory().getDrawingController().hideDrawing(drawingDestination, true);
                     }

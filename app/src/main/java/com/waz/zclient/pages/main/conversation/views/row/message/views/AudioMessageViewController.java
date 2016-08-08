@@ -30,11 +30,13 @@ import android.widget.Toast;
 import com.waz.api.Asset;
 import com.waz.api.AssetStatus;
 import com.waz.api.Message;
+import com.waz.api.NetworkMode;
 import com.waz.api.PlaybackControls;
 import com.waz.zclient.R;
 import com.waz.zclient.controllers.selection.MessageActionModeController;
 import com.waz.zclient.core.controllers.tracking.events.media.PlayedAudioMessageEvent;
 import com.waz.zclient.core.api.scala.ModelObserver;
+import com.waz.zclient.core.stores.network.DefaultNetworkAction;
 import com.waz.zclient.pages.main.conversation.views.MessageViewsContainer;
 import com.waz.zclient.pages.main.conversation.views.row.message.MessageViewController;
 import com.waz.zclient.pages.main.conversation.views.row.separator.Separator;
@@ -223,11 +225,12 @@ public class AudioMessageViewController extends MessageViewController implements
                 }
                 break;
             case UPLOAD_DONE:
-                if (messageViewsContainer.getStoreFactory().getNetworkStore().hasInternetConnection()) {
-                    setPlaybackControls(true);
-                } else {
-                    messageViewsContainer.getStoreFactory().getNetworkStore().notifyNetworkAccessFailed();
-                }
+                messageViewsContainer.getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new DefaultNetworkAction() {
+                    @Override
+                    public void execute(NetworkMode networkMode) {
+                        setPlaybackControls(true);
+                    }
+                });
                 break;
             case DOWNLOAD_DONE:
                 if (playbackControls == null) {

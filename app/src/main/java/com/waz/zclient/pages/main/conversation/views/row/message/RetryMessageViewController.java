@@ -25,8 +25,10 @@ import android.os.Handler;
 import android.support.annotation.CallSuper;
 import android.view.View;
 import com.waz.api.Message;
+import com.waz.api.NetworkMode;
 import com.waz.api.UpdateListener;
 import com.waz.zclient.R;
+import com.waz.zclient.core.stores.network.NetworkAction;
 import com.waz.zclient.pages.main.conversation.views.MessageViewsContainer;
 import com.waz.zclient.pages.main.conversation.views.row.separator.Separator;
 import com.waz.zclient.ui.utils.MathUtils;
@@ -138,12 +140,27 @@ public abstract class RetryMessageViewController extends MessageViewController i
                     messageViewsContainer.getStoreFactory().isTornDown()) {
                     return;
                 }
-                if (!messageViewsContainer.getStoreFactory().getNetworkStore().hasInternetConnection()) {
-                    unableToRetrySendingNoInternet();
-                    return;
-                }
-                isRetrying = true;
-                message.retry();
+
+                messageViewsContainer.getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new NetworkAction() {
+                    @Override
+                    public void execute(NetworkMode networkMode) {
+                        isRetrying = true;
+                        message.retry();
+                    }
+
+                    @Override
+                    public void onNoNetwork() {
+                        ViewUtils.showAlertDialog(context,
+                                                  R.string.alert_dialog__no_network__header,
+                                                  R.string.resend_message__no_network__message,
+                                                  R.string.alert_dialog__confirmation,
+                                                  new DialogInterface.OnClickListener() {
+                                                      @Override
+                                                      public void onClick(DialogInterface dialog, int which) {
+                                                      }
+                                                  }, false);
+                    }
+                });
             }
         });
     }
@@ -158,18 +175,4 @@ public abstract class RetryMessageViewController extends MessageViewController i
         isRetrying = false;
         super.recycle();
     }
-
-    private void unableToRetrySendingNoInternet() {
-        messageViewsContainer.getStoreFactory().getNetworkStore().notifyNetworkAccessFailed();
-        ViewUtils.showAlertDialog(context,
-                                  R.string.alert_dialog__no_network__header,
-                                  R.string.resend_message__no_network__message,
-                                  R.string.alert_dialog__confirmation,
-                                  new DialogInterface.OnClickListener() {
-                                      @Override
-                                      public void onClick(DialogInterface dialog, int which) {
-                                      }
-                                  }, false);
-    }
-
 }

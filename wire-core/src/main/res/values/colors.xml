@@ -268,4 +268,6 @@
     <color name="single_image_message__date__font_color">@color/white</color>
     <color name="single_image_message__icon__text_color_normal">@color/white</color>
     <color name="single_image_message__icon__text_color_pressed">@color/white_40</color>
+    <color name="camera_text_shadow">@color/black_48</color>
+    <color name="navigation_strip_background_color">@color/black_90</color>
 </resources>

@@ -22,10 +22,12 @@ import android.media.AudioManager
 import android.os.{PowerManager, Vibrator}
 import android.support.multidex.MultiDexApplication
 import com.waz.api.{NetworkMode, ZMessagingApi, ZMessagingApiFactory}
-import com.waz.service.{PreferenceService, ZMessaging}
+import com.waz.media.manager.MediaManager
+import com.waz.service.{MediaManagerService, PreferenceService, ZMessaging}
 import com.waz.threading.Threading
 import com.waz.utils.events.{EventContext, Signal, Subscription}
 import com.waz.zclient.calling.{CallPermissionsController, CallingActivity, CurrentCallController}
+import com.waz.zclient.camera.CameraPreviewController
 
 object WireApplication {
   var APP_INSTANCE: WireApplication = null
@@ -34,6 +36,8 @@ object WireApplication {
     bind[Signal[Option[ZMessaging]]] to ZMessaging.currentUi.currentZms
     bind[PreferenceService] to new PreferenceService(inject[Context])
     bind[GlobalCallingController] to new GlobalCallingController(inject[Context])
+    bind[CameraPreviewController] to new CameraPreviewController()(EventContext.Global)
+    bind[MediaManagerService] to ZMessaging.currentGlobal.mediaManager
 
     //Global android services
     bind[PowerManager] to inject[Context].getSystemService(Context.POWER_SERVICE).asInstanceOf[PowerManager]

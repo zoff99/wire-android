@@ -63,7 +63,7 @@ public class CursorLayout extends LinearLayout implements
                                                                              CursorMenuItem.DUMMY,
                                                                              CursorMenuItem.DUMMY,
                                                                              CursorMenuItem.DUMMY,
-                                                                             CursorMenuItem.MORE);
+                                                                             CursorMenuItem.LESS);
 
     private TypingIndicatorContainer typingIndicatorContainer;
     private CursorToolbarFrame cursorToolbarFrame;
@@ -170,6 +170,7 @@ public class CursorLayout extends LinearLayout implements
 
     public void setAccentColor(int accentColor) {
         newCursorEditText.setAccentColor(accentColor);
+        mainToolbar.setAccentColor(accentColor);
     }
 
     private void connectEditText() {
@@ -355,12 +356,9 @@ public class CursorLayout extends LinearLayout implements
             cursorCallback.onCursorButtonClicked(item);
         }
         if (item == CursorMenuItem.MORE) {
-            if (mainToolbar.getVisibility() == VISIBLE) {
-                showSecondaryCursorToolbar();
-            } else {
-                hideSecondaryCursorToolbar();
-            }
-
+            showSecondaryCursorToolbar();
+        } else if (item == CursorMenuItem.LESS) {
+            hideSecondaryCursorToolbar();
         }
     }
 
@@ -476,6 +474,7 @@ public class CursorLayout extends LinearLayout implements
     private ObjectAnimator getShowToolbarAnimator(View view, float fromValue, float toValue) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, fromValue, toValue);
         animator.setDuration(cursorToolbarAnimationDuration);
+        animator.setStartDelay(getResources().getInteger(R.integer.animation_delay_short));
         animator.setInterpolator(new Expo.EaseOut());
         return animator;
     }
@@ -483,7 +482,7 @@ public class CursorLayout extends LinearLayout implements
     private ObjectAnimator getHideToolbarAnimator(final View view, float fromValue, float toValue) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, fromValue, toValue);
         animator.setDuration(cursorToolbarAnimationDuration);
-        animator.setInterpolator(new Expo.EaseOut());
+        animator.setInterpolator(new Expo.EaseIn());
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationCancel(Animator animation) {
@@ -515,5 +514,9 @@ public class CursorLayout extends LinearLayout implements
         } else {
             topBorder.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void onExtendedCursorClosed() {
+        mainToolbar.unselectItems();
     }
 }

@@ -26,6 +26,7 @@ import com.waz.api.IConversation;
 import com.waz.api.Message;
 import com.waz.api.Permission;
 import com.waz.zclient.R;
+import com.waz.zclient.controllers.drawing.DrawingController;
 import com.waz.zclient.controllers.tracking.ITrackingController;
 import com.waz.zclient.controllers.tracking.events.connect.SentConnectRequestEvent;
 import com.waz.zclient.controllers.tracking.events.connect.SentInviteToContactEvent;
@@ -42,6 +43,7 @@ import com.waz.zclient.core.controllers.tracking.events.media.SentTextMessageEve
 import com.waz.zclient.core.controllers.tracking.events.settings.ChangedContactsPermissionEvent;
 import com.waz.zclient.core.controllers.tracking.events.settings.ChangedSoundNotificationLevelEvent;
 import com.waz.zclient.core.stores.connect.IConnectStore;
+import com.waz.zclient.pages.extendedcursor.image.CursorImagesPreviewLayout;
 import com.waz.zclient.ui.optionsmenu.OptionsMenuItem;
 
 import java.util.Locale;
@@ -258,15 +260,35 @@ public class TrackingUtils {
                                                                   conversation.isOtto()));
 
         trackingController.tagEvent(new SentPictureEvent(SentPictureEvent.Source.GIPHY,
-                                                         conversation.getType().name()));
+                                                         conversation.getType().name(),
+                                                         SentPictureEvent.Method.DEFAULT,
+                                                         SentPictureEvent.SketchSource.NONE));
         trackingController.tagEvent(new CompletedMediaActionEvent(CompletedMediaType.PHOTO,
                                                                   conversation.getType().name(),
                                                                   conversation.isOtto()));
     }
 
-    public static void onSentSketchMessage(ITrackingController trackingController, IConversation conversation) {
+    public static void onSentSketchMessage(ITrackingController trackingController,
+                                           IConversation conversation,
+                                           DrawingController.DrawingDestination drawingDestination) {
+
+        SentPictureEvent.SketchSource sketchSource = SentPictureEvent.SketchSource.NONE;
+        switch (drawingDestination) {
+            case CAMERA_PREVIEW_VIEW:
+                sketchSource = SentPictureEvent.SketchSource.CAMERA_GALLERY;
+                break;
+            case SKETCH_BUTTON:
+                sketchSource = SentPictureEvent.SketchSource.SKETCH_BUTTON;
+                break;
+            case SINGLE_IMAGE_VIEW:
+                sketchSource = SentPictureEvent.SketchSource.IMAGE_FULL_VIEW;
+                break;
+        }
+
         trackingController.tagEvent(new SentPictureEvent(SentPictureEvent.Source.SKETCH,
-                                                         conversation.getType().name()));
+                                                         conversation.getType().name(),
+                                                         SentPictureEvent.Method.DEFAULT,
+                                                         sketchSource));
         trackingController.tagEvent(new CompletedMediaActionEvent(CompletedMediaType.PHOTO,
                                                                   conversation.getType().name(),
                                                                   conversation.isOtto()));
@@ -280,17 +302,56 @@ public class TrackingUtils {
                                                                   conversation.isOtto()));
     }
 
-    public static void onSentPhotoMessage(ITrackingController trackingController,
-                                          IConversation conversation,
-                                          boolean imageFromCamera) {
-        SentPictureEvent.Source source =
-            imageFromCamera ? SentPictureEvent.Source.CAMERA : SentPictureEvent.Source.GALLERY;
-        trackingController.tagEvent(new SentPictureEvent(source, conversation.getType().name()));
+    public static void onSentPhotoMessageFromSharing(ITrackingController trackingController,
+                                                     IConversation conversation) {
+
+        trackingController.tagEvent(new SentPictureEvent(SentPictureEvent.Source.SHARING,
+                                                         conversation.getType().name(),
+                                                         SentPictureEvent.Method.DEFAULT,
+                                                         SentPictureEvent.SketchSource.NONE));
         trackingController.tagEvent(new CompletedMediaActionEvent(CompletedMediaType.PHOTO,
                                                                   conversation.getType().name(),
                                                                   conversation.isOtto()));
         trackingController.updateSessionAggregates(RangedAttribute.IMAGES_SENT);
     }
+
+    public static void onSentPhotoMessage(ITrackingController trackingController,
+                                          IConversation conversation,
+                                          SentPictureEvent.Source source,
+                                          SentPictureEvent.Method method) {
+        trackingController.tagEvent(new SentPictureEvent(source,
+                                                         conversation.getType().name(),
+                                                         method,
+                                                         SentPictureEvent.SketchSource.NONE));
+        trackingController.tagEvent(new CompletedMediaActionEvent(CompletedMediaType.PHOTO,
+                                                                  conversation.getType().name(),
+                                                                  conversation.isOtto()));
+        trackingController.updateSessionAggregates(RangedAttribute.IMAGES_SENT);
+    }
+
+
+    public static void onSentPhotoMessage(ITrackingController trackingController,
+                                          IConversation conversation,
+                                          CursorImagesPreviewLayout.Source source) {
+        SentPictureEvent.Source eventSource = source == CursorImagesPreviewLayout.Source.CAMERA ?
+                                              SentPictureEvent.Source.CAMERA :
+                                              SentPictureEvent.Source.GALLERY;
+        SentPictureEvent.Method eventMethod = SentPictureEvent.Method.DEFAULT;
+        switch (source) {
+            case CAMERA:
+            case IN_APP_GALLERY:
+                eventMethod = SentPictureEvent.Method.KEYBOARD;
+                break;
+            case DEVICE_GALLERY:
+                eventMethod = SentPictureEvent.Method.FULL_SCREEN;
+                break;
+        }
+        onSentPhotoMessage(trackingController,
+                           conversation,
+                           eventSource,
+                           eventMethod);
+    }
+
 
     public static void onSentPingMessage(ITrackingController trackingController, IConversation conversation) {
         boolean isGroupConversation = conversation.getType() == IConversation.Type.GROUP;

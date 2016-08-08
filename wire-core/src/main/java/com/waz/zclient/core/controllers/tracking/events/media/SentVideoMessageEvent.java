@@ -24,9 +24,21 @@ import com.waz.zclient.core.controllers.tracking.events.Event;
 
 public class SentVideoMessageEvent extends Event {
 
-    public SentVideoMessageEvent(int duration, String conversationType) {
-        rangedAttributes.put(RangedAttribute.VIDEO_AND_AUDIO_MESSAGE_DURATION, duration);
+    public enum Source {
+        CURSOR_BUTTON("cursor_button"),
+        KEYBOARD("keyboard");
+
+        public final String nameString;
+
+        Source(String nameString) {
+            this.nameString = nameString;
+        }
+    }
+
+    public SentVideoMessageEvent(int durationAsSec, String conversationType, SentVideoMessageEvent.Source source) {
+        rangedAttributes.put(RangedAttribute.VIDEO_AND_AUDIO_MESSAGE_DURATION, durationAsSec);
         attributes.put(Attribute.CONVERSATION_TYPE, conversationType);
+        attributes.put(Attribute.SOURCE, source.nameString);
     }
 
     @NonNull

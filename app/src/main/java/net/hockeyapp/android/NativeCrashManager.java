@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
- * This part of the Wire sofware uses source code from the breakapp project.
- * (https://github.com/ashtom/breakapp)
+ * This part of the Wire sofware uses source code from the breakapp project
+ * (https://github.com/ashtom/breakapp) governed by the MIT license.
+ *
+ * The MIT License (MIT)
  *
  * Copyright (c) 2013 Thomas Dohmke, Bit Stadium GmbH.
  *

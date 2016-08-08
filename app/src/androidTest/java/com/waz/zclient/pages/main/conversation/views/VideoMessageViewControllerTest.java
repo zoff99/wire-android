@@ -38,6 +38,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.waz.zclient.testutils.CustomViewAssertions.isGone;
 import static com.waz.zclient.testutils.CustomViewAssertions.isVisible;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -165,9 +166,7 @@ public class VideoMessageViewControllerTest extends ViewTest<MainTestActivity> {
 
         setView(viewController.getView().getLayout());
 
-        onView(withId(R.id.gpv__row_conversation__video_button)).check(isVisible());
-        GlyphProgressView glyphProgressView = ViewUtils.getView(activity, R.id.gpv__row_conversation__video_button);
-        assertTrue("Progress view is not animating", glyphProgressView.isAnimatingEndlessProgress());
+        onView(withId(R.id.gpv__row_conversation__video_button)).check(isGone());
     }
 
     private Asset createMockAsset(AssetStatus status) {

@@ -15,9 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.waz.zclient.pages.main.profile.camera;
+package com.waz.zclient.camera;
 
-public enum ControlState {
-    CAMERA,
-    DIALOG_APPROVE_SELECTION
+import android.graphics.Rect;
+import com.waz.api.ImageAsset;
+
+public interface CameraPreviewObserver {
+
+    void onCameraLoaded();
+
+    void onCameraLoadingFailed();
+
+    /**
+     * This method needs to be overriden if the view using the CameraPreview wants to leave the app (and potentially
+     * let another app use the camera). Only when this callback method returns can we be sure that the camera is closed
+     * and that it's safe for other apps to attempt to open it.
+     */
+    void onCameraReleased();
+
+    void onPictureTaken(ImageAsset imageAsset);
+
+    void onFocusBegin(Rect focusArea);
+
+    void onFocusComplete();
 }

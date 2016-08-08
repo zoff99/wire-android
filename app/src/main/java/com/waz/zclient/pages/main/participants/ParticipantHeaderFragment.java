@@ -41,6 +41,7 @@ import android.widget.TextView;
 import com.waz.api.CommonConnections;
 import com.waz.api.IConversation;
 import com.waz.api.MessagesList;
+import com.waz.api.NetworkMode;
 import com.waz.api.OtrClient;
 import com.waz.api.User;
 import com.waz.api.UsersList;
@@ -393,9 +394,9 @@ public class ParticipantHeaderFragment extends BaseFragment<ParticipantHeaderFra
             if (event.getAction() == MotionEvent.ACTION_UP && downAction) {
                 if (MathUtils.floatEqual(headerEditText.getAlpha(), 0f)) {
                     // only if not already visible and network is available
-                    getStoreFactory().getNetworkStore().doIfNetwork(new NetworkAction() {
+                    getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new NetworkAction() {
                         @Override
-                        public void execute() {
+                        public void execute(NetworkMode networkMode) {
                             showEditHeader(true);
                         }
 
@@ -463,9 +464,9 @@ public class ParticipantHeaderFragment extends BaseFragment<ParticipantHeaderFra
     }
 
     private void renameConversation() {
-        getStoreFactory().getNetworkStore().doIfNetwork(new NetworkAction() {
+        getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new NetworkAction() {
                                                                       @Override
-                                                                      public void execute() {
+                                                                      public void execute(NetworkMode networkMode) {
                                                                           updateConversationName();
                                                                       }
 
@@ -475,7 +476,7 @@ public class ParticipantHeaderFragment extends BaseFragment<ParticipantHeaderFra
                                                                           showOfflineRenameError();
                                                                       }
                                                                   }
-                                                                 );
+                                                                       );
     }
 
     private void updateConversationName() {

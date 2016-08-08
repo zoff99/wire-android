@@ -39,6 +39,7 @@ import com.waz.api.ContactDetails;
 import com.waz.api.ContactMethod;
 import com.waz.api.Contacts;
 import com.waz.api.IConversation;
+import com.waz.api.NetworkMode;
 import com.waz.api.User;
 import com.waz.api.UsersSearchResult;
 import com.waz.zclient.OnBackPressedListener;
@@ -820,9 +821,9 @@ public class PickUserFragment extends BaseFragment<PickUserFragment.Container> i
 
     @Override
     public void onContactListContactClicked(final ContactDetails contactDetails) {
-        getStoreFactory().getNetworkStore().doIfNetwork(new DefaultNetworkAction() {
+        getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new DefaultNetworkAction() {
             @Override
-            public void execute() {
+            public void execute(NetworkMode networkMode) {
                 final int contactMethodsCount = contactDetails.getContactMethods().size();
                 final ContactMethod[] contactMethods = contactDetails.getContactMethods().toArray(new ContactMethod[contactMethodsCount]);
 

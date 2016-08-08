@@ -65,12 +65,12 @@ public class ConnectivityFragment extends BaseFragment<ConnectivityFragment.Cont
     @Override
     public void onStart() {
         super.onStart();
-        getStoreFactory().getNetworkStore().addNetworkControllerObserver(this);
+        getStoreFactory().getNetworkStore().addNetworkStoreObserver(this);
     }
 
     @Override
     public void onStop() {
-        getStoreFactory().getNetworkStore().removeNetworkControllerObserver(this);
+        getStoreFactory().getNetworkStore().removeNetworkStoreObserver(this);
         super.onStop();
     }
 
@@ -87,27 +87,33 @@ public class ConnectivityFragment extends BaseFragment<ConnectivityFragment.Cont
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void onConnectivityChange(boolean hasInternet) {
-        if (hasInternet) {
+    public void onConnectivityChange(boolean hasInternet, boolean isServerError) {
+        if (hasInternet && !isServerError) {
             hideIndicator();
         } else {
-            showIndicator();
+            onNoInternetConnection(isServerError);
         }
     }
 
     private void showIndicator() {
+        if (connectivityIndicatorView == null) {
+            return;
+        }
+
         connectivityIndicatorView.show();
     }
 
     private void hideIndicator() {
+        if (connectivityIndicatorView == null) {
+            return;
+        }
         connectivityIndicatorView.hide();
     }
 
     @Override
-    public void onNetworkAccessFailed() {
-        if (!getStoreFactory().getNetworkStore().hasInternetConnection()) {
-            showIndicator();
-        }
+    public void onNoInternetConnection(boolean isServerError) {
+        connectivityIndicatorView.setIsServerError(isServerError);
+        showIndicator();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////

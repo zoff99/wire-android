@@ -80,9 +80,6 @@ public interface IProfileStore extends IStore {
     /* notifies self store that app is launched for the very first time */
     void setIsFirstLaunch(boolean isFirstLaunch);
 
-    /* delete image */
-    void deleteImage();
-
     void setUserPicture(ImageAsset imageAsset);
 
     boolean hasProfileImage();

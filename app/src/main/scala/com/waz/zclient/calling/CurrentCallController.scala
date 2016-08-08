@@ -17,6 +17,7 @@
  */
 package com.waz.zclient.calling
 
+import _root_.com.waz.zclient.utils.LayoutSpec
 import android.media.AudioManager
 import android.os.Vibrator
 import com.waz.api.VideoSendState.{DONT_SEND, SEND}
@@ -30,7 +31,6 @@ import com.waz.threading.Threading
 import com.waz.utils._
 import com.waz.utils.events.{ClockSignal, Signal}
 import com.waz.zclient._
-import com.waz.zclient.utils.LayoutSpec
 import org.threeten.bp.Duration
 import org.threeten.bp.Duration._
 import org.threeten.bp.Instant._
@@ -150,14 +150,16 @@ class CurrentCallController(implicit inj: Injector, cxt: WireContext) extends In
   val flowManager = zms map (_.flowmanager)
 
   val avsStateAndChangeReason = flowManager.flatMap(_.stateOfReceivedVideo)
+  val cameraFailed = flowManager.flatMap(_.cameraFailedSig)
 
-  val stateMessageText = Signal(callState, avsStateAndChangeReason, conversationName, otherSendingVideo) map { values =>
+  val stateMessageText = Signal(callState, cameraFailed, avsStateAndChangeReason, conversationName, otherSendingVideo) map { values =>
     Timber.d(s"(callState, avsStateAndChangeReason, conversationName, otherSending): $values")
     values match {
-      case (SELF_JOINING, _, _, _) => Option(cxt.getString(R.string.ongoing__connecting))
-      case (SELF_CONNECTED, StateAndReason(AvsVideoState.STOPPED, AvsVideoReason.BAD_CONNECTION), _, true) => Option(cxt.getString(R.string.ongoing__poor_connection_message))
-      case (SELF_CONNECTED, _, otherUserName, false) => Option(cxt.getString(R.string.ongoing__other_turned_off_video, otherUserName))
-      case (SELF_CONNECTED, UnknownState, otherUserName, true) => Option(cxt.getString(R.string.ongoing__other_unable_to_send_video, otherUserName))
+      case (SELF_CALLING, true, _, _, _) => Option(cxt.getString(R.string.calling__self_preview_unavailable_long))
+      case (SELF_JOINING, _, _, _, _) => Option(cxt.getString(R.string.ongoing__connecting))
+      case (SELF_CONNECTED, _, StateAndReason(AvsVideoState.STOPPED, AvsVideoReason.BAD_CONNECTION), _, true) => Option(cxt.getString(R.string.ongoing__poor_connection_message))
+      case (SELF_CONNECTED, _, _, otherUserName, false) => Option(cxt.getString(R.string.ongoing__other_turned_off_video, otherUserName))
+      case (SELF_CONNECTED, _, UnknownState, otherUserName, true) => Option(cxt.getString(R.string.ongoing__other_unable_to_send_video, otherUserName))
       case _ => None
     }
   }

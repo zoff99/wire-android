@@ -56,7 +56,6 @@ class VideoCallingView(val context: Context, val attrs: AttributeSet, val defSty
   lazy val selfViewLayout: LinearLayout = findById(R.id.ll__self_view_layout)
   lazy val roundedLayout: RoundedLayout = findById(R.id.rl__rounded_layout)
 
-  //TODO use the placeHolder when you're camera stops working - needs a warning from AVS
   lazy val selfPreviewPlaceHolder: View = findById(R.id.tv__self_preview_place_holder)
 
   lazy val cameraToggleButton: CallControlCameraToggleButtonView = findById(R.id.ccbv__camera_toggle_button)
@@ -125,13 +124,18 @@ class VideoCallingView(val context: Context, val attrs: AttributeSet, val defSty
       messageView.setVisibility(GONE)
   }
 
-  Signal(controller.callEstablished, controller.videoSendState).map {
-    case (true, VideoSendState.SEND) => GONE
+  Signal(controller.callEstablished, controller.cameraFailed, controller.videoSendState).map {
+    case (true, false, VideoSendState.SEND) => GONE
     case _ => VISIBLE
   }.on(Threading.Ui)(selfPreviewPlaceHolder.setVisibility)
 
-  Signal(controller.callEstablished, controller.videoSendState, controller.captureDevices).map {
-    case (true, VideoSendState.SEND, devices) if devices.size > 1 =>
+  Signal(controller.callEstablished, controller.cameraFailed, controller.videoSendState).map {
+    case (true, false, VideoSendState.SEND) => VISIBLE
+    case _ => GONE
+  }.on(Threading.Ui)(setSelfPreviewVisible)
+
+  Signal(controller.callEstablished, controller.cameraFailed, controller.videoSendState, controller.captureDevices).map {
+    case (true, false, VideoSendState.SEND, devices) if devices.size > 1 =>
       isCameraToggleButtonVisible = true
       VISIBLE
     case _ =>
@@ -178,6 +182,10 @@ class VideoCallingView(val context: Context, val attrs: AttributeSet, val defSty
 
   private def setFullScreenView(view: TextureView) = addVideoViewToLayout(this, view)
 
+  private def setSelfPreviewVisible(visibility: Int) = {
+    findVideoView(roundedLayout).foreach(_.setVisibility(visibility))
+  }
+
   /**
     * Ensures there's only ever one video TextureView in a layout, and that it's always at the bottom. Both this layout
     * and the RoundedLayout for the small self-preview extend FrameLayout, so hopefully enforcing FrameLayout here
@@ -201,14 +209,15 @@ class VideoCallingView(val context: Context, val attrs: AttributeSet, val defSty
   }
 
   private def removeVideoViewFromLayoutByTag(layout: ViewGroup): Unit = {
-    Option(layout.getChildAt(0)).foreach {
-      view => Option(view.getTag).foreach { tag =>
-        if (tag == videoViewTag) {
-          layout.removeView(view)
-        }
-      }
-    }
+    findVideoView(layout).foreach(layout.removeView)
   }
+
+  private def findVideoView(layout: ViewGroup) =
+    for {
+      v <- Option(layout.getChildAt(0))
+      t <- Option(v.getTag)
+      if (t == videoViewTag)
+    } yield v
 }
 
 object VideoCallingView {

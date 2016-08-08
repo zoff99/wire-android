@@ -46,7 +46,6 @@ import com.waz.zclient.core.controllers.tracking.events.registration.AddedPhotoE
 import com.waz.zclient.pages.BaseFragment;
 import com.waz.zclient.pages.main.profile.camera.CameraContext;
 import com.waz.zclient.pages.main.profile.camera.CameraFragment;
-import com.waz.zclient.pages.main.profile.camera.CameraType;
 import com.waz.zclient.ui.utils.BitmapUtils;
 import com.waz.zclient.ui.utils.ColorUtils;
 import com.waz.zclient.ui.utils.KeyboardUtils;
@@ -313,16 +312,6 @@ public class SignUpPhotoFragment extends BaseFragment<SignUpPhotoFragment.Contai
         dismissCameraFragment();
         AddedPhotoEvent.PhotoSource photoSource = imageFromCamera ? AddedPhotoEvent.PhotoSource.CAMERA : AddedPhotoEvent.PhotoSource.GALLERY;
         handleSelectedBitmap(imageAsset, photoSource);
-    }
-
-    @Override
-    public void onDeleteImage(CameraContext cameraContext) {
-
-    }
-
-    @Override
-    public void onCameraTypeChanged(CameraType cameraType, CameraContext cameraContext) {
-
     }
 
     @Override

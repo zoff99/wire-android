@@ -19,6 +19,13 @@
 
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="permissions_denied_dialog_acknowledge">OK</string>
+    <string name="permissions_denied_dialog_settings">Settings</string>
+
+    <string name="camera_not_available">CAMERA NOT AVAILABLE</string>
+    <string name="camera_permissions_denied_title">Camera not available</string>
+    <string name="camera_permissions_denied_message">To take and send photos, grant permission to acces the camera</string>
+
     <!-- Registration and Sign in -->
     <string name="welcome__slogan">Modern, private communication.</string>
     <string name="welcome__terms_of_service">BY CONTINUING YOU AGREE TO _TERMS OF USE_.</string>
@@ -277,7 +284,6 @@
     <string name="calling__header__outgoing_video_subtitle">Ringing</string>
     <string name="calling__header__incoming_subtitle">Calling</string>
     <string name="calling__header__incoming_subtitle__video">Video calling</string>
-    <string name="calling__self_preview_unavailable">VIDEO OFF</string>
     <string name="incoming__controls__incoming__decline">DECLINE</string>
     <string name="incoming__controls__incoming__accept">ACCEPT</string>
     <string name="incoming__controls__ongoing__hangup">HANG UP</string>
@@ -287,7 +293,9 @@
     <string name="ongoing__other_turned_off_video">%1$s TURNED OFF THE VIDEO</string>
     <string name="ongoing__other_unable_to_send_video">%1$s IS UNABLE TO SEND VIDEO</string>
     <string name="ongoing__poor_connection_message">VIDEO STOPPED DUE TO POOR CONNECTION</string>
-    <string name="ongoing__connecting">CONNECTING…</string>
+    <string name="ongoing__connecting">CONNECTING&#8230;</string>
+    <string name="calling__self_preview_unavailable">VIDEO OFF</string>
+    <string name="calling__self_preview_unavailable_long">CAMERA NOT AVAILABLE</string>
 
     <!-- Connect request -->
     <string name="connect__message">Hi %1$s,\nLet\'s connect on Wire.\n%2$s</string>
@@ -570,7 +578,8 @@
     <string name="url_otr_decryption_error_2">https://wire.com/privacy/error-2</string>
 
     <!-- No Internet connection -->
-    <string name="system_status__no_connectivity">NO INTERNET</string>
+    <string name="system_status__no_internet">NO INTERNET</string>
+    <string name="system_status__no_server_connection">CONNECTING&#8230;</string>
 
     <!-- SHARING -->
     <string name="system_status__sharing">CHOOSE A CONVERSATION</string>
@@ -827,6 +836,7 @@
     <!--Sketch-->
     <string name="drawing__tip__picture__message">TAP COLOR TO CHANGE THE BRUSH SIZE.\n\nSHAKE TO REMOVE PHOTOS.</string>
     <string name="drawing__tip__message">TAP COLOR TO CHANGE THE BRUSH SIZE.\n\nPRESS AND HOLD TO FILL AN AREA.</string>
+    <string name="add_a_sketch">Add a sketch</string>
 
     <!-- Location sharing -->
     <string name="location_sharing__tip">Drag the map to change location</string>
@@ -981,4 +991,3 @@
     <string name="hint_change_filter">Change a filter above</string>
 
 </resources>
-

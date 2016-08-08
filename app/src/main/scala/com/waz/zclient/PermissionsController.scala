@@ -21,10 +21,13 @@ import _root_.com.waz.threading.Threading
 import _root_.com.waz.utils.events.{EventContext, EventStream}
 import android.Manifest.permission
 import android.app.Activity
-import android.content.Context
+import android.content.{Intent, DialogInterface, Context}
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
+import com.waz.zclient.utils.ViewUtils
 
 import scala.concurrent.{Future, Promise}
 
@@ -50,8 +53,25 @@ class PermissionsController(sysPerms: PermissionsWrapper)(implicit injector: Inj
     }
   }
 
-  def requiring(permissions: Set[Permission])(onGranted: => Unit)(onDenied: PermissionActivity => Unit) =
-    request(permissions).map { ps => if (ps forall (_.hasPermission(sysPerms))) onGranted else onDenied(activity) }(Threading.Ui)
+  def requiring(permissions: Set[Permission])(onGranted: => Unit)(dialogTitleId: Int = -1, dialogMessageId: Int = -1, onDenied: => Unit = ()) =
+    request(permissions).map { ps => if (ps forall (_.hasPermission(sysPerms))) onGranted else {
+      ViewUtils.showAlertDialog(
+        activity,
+        dialogTitleId,
+        dialogMessageId,
+        R.string.permissions_denied_dialog_acknowledge,
+        R.string.permissions_denied_dialog_settings,
+        new DialogInterface.OnClickListener() {
+          override def onClick(dialog: DialogInterface, which: Int) = onDenied
+        },
+        new DialogInterface.OnClickListener() {
+          override def onClick(dialog: DialogInterface, which: Int) = {
+            val intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", activity.getPackageName(), null))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activity.startActivity(intent)
+          }
+        });
+    }}(Threading.Ui)
 
   activity.onPermissionResult.on(Threading.Ui) {
     case (requestCode, permissionNames, grantResults) =>
@@ -89,17 +109,17 @@ sealed trait Permission {
 
 object Permission {
   def apply(name: String): Permission = name match {
-    case permission.RECORD_AUDIO => RecordAudio
-    case permission.CAMERA => Camera
+    case permission.RECORD_AUDIO => RecordAudioPermission
+    case permission.CAMERA => CameraPermission
     case _ @ other => UnknownPermission(other)
   }
 }
 
-case object RecordAudio extends Permission {
+case object RecordAudioPermission extends Permission {
   override val name: String = permission.RECORD_AUDIO
 }
 
-case object Camera extends Permission {
+case object CameraPermission extends Permission {
   override val name: String = permission.CAMERA
 }
 

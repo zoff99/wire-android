@@ -68,7 +68,9 @@ public class AppTrackingEventsHandler implements TrackingEventsHandler {
                 String type = trackingEvent.getConversationType().getOrElse(IConversation.Type.UNKNOWN).toString();
                 boolean isOtto = trackingEvent.isInConversationWithOtto().getOrElse(false);
                 trackingController.tagEvent(new InitiatedFileUploadEvent(assetMimeType, assetSize, type));
-                trackingController.tagEvent(new SentPictureEvent(SentPictureEvent.Source.CLIP, type));
+                trackingController.tagEvent(new SentPictureEvent(SentPictureEvent.Source.CLIP, type,
+                                                                 SentPictureEvent.Method.DEFAULT,
+                                                                 SentPictureEvent.SketchSource.NONE));
                 trackingController.tagEvent(new CompletedMediaActionEvent(CompletedMediaType.PHOTO,
                                                                           type,
                                                                           isOtto));

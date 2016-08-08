@@ -27,8 +27,6 @@ public enum Attribute {
 
     GROUP_CONVERSATION_CREATED("groupConversationCreated"),
 
-    PICTURE_SOURCE("pictureSource"),
-
     REGISTRATION_SHARE_CONTACTS_ALLOWED("allowed"),
 
     REGISTRATION_FAIL_REASON("reason"),
@@ -90,7 +88,8 @@ public enum Attribute {
 
     // AN-4011: Temporary attributes
     REFERRAL_TOKEN("REFERRAL_TOKEN"),
-    USER_TOKEN("USER_TOKEN")
+    USER_TOKEN("USER_TOKEN"),
+    SKETCH_SOURCE("sketch_source")
     ;
 
 

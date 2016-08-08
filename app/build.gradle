@@ -414,6 +414,7 @@ dependencies {
     compile deps.psMaps
     compile deps.psLocation
     compile deps.cardview
+
     //Used for animating incoming messages
     compile deps.nineoldandroids
     // For using local files in app/libs

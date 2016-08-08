@@ -63,10 +63,12 @@ import com.waz.api.AssetFactory;
 import com.waz.api.AssetForUpload;
 import com.waz.api.AssetStatus;
 import com.waz.api.AudioAssetForUpload;
+import com.waz.api.AudioEffect;
 import com.waz.api.ConversationsList;
 import com.waz.api.ErrorsList;
 import com.waz.api.IConversation;
 import com.waz.api.ImageAsset;
+import com.waz.api.ImageAssetFactory;
 import com.waz.api.InputStateIndicator;
 import com.waz.api.Message;
 import com.waz.api.MessageContent;
@@ -79,7 +81,6 @@ import com.waz.api.UpdateListener;
 import com.waz.api.User;
 import com.waz.api.UsersList;
 import com.waz.api.Verification;
-import com.waz.api.AudioEffect;
 import com.waz.zclient.BuildConfig;
 import com.waz.zclient.OnBackPressedListener;
 import com.waz.zclient.R;
@@ -96,6 +97,7 @@ import com.waz.zclient.controllers.globallayout.KeyboardVisibilityObserver;
 import com.waz.zclient.controllers.mentioning.MentioningObserver;
 import com.waz.zclient.controllers.navigation.NavigationControllerObserver;
 import com.waz.zclient.controllers.navigation.Page;
+import com.waz.zclient.controllers.navigation.PagerControllerObserver;
 import com.waz.zclient.controllers.permission.RequestPermissionsObserver;
 import com.waz.zclient.controllers.selection.IMessageActionModeController;
 import com.waz.zclient.controllers.selection.MessageActionModeObserver;
@@ -107,15 +109,16 @@ import com.waz.zclient.controllers.tracking.events.conversation.DeletedMessageEv
 import com.waz.zclient.controllers.tracking.events.conversation.ForwardedMessageEvent;
 import com.waz.zclient.controllers.tracking.events.conversation.OpenedMessageActionEvent;
 import com.waz.zclient.controllers.tracking.events.conversation.SelectedMessageEvent;
-import com.waz.zclient.core.controllers.tracking.events.media.CancelledRecordingAudioMessageEvent;
-import com.waz.zclient.core.controllers.tracking.events.media.OpenedActionHintEvent;
-import com.waz.zclient.core.controllers.tracking.events.media.OpenedMediaActionEvent;
-import com.waz.zclient.core.controllers.tracking.events.media.PreviewedAudioMessageEvent;
-import com.waz.zclient.core.controllers.tracking.events.media.SentVideoMessageEvent;
 import com.waz.zclient.controllers.tracking.events.navigation.OpenedMoreActionsEvent;
 import com.waz.zclient.core.api.scala.ModelObserver;
 import com.waz.zclient.core.controllers.tracking.attributes.RangedAttribute;
 import com.waz.zclient.core.controllers.tracking.events.filetransfer.SelectedTooLargeFileEvent;
+import com.waz.zclient.core.controllers.tracking.events.media.CancelledRecordingAudioMessageEvent;
+import com.waz.zclient.core.controllers.tracking.events.media.OpenedActionHintEvent;
+import com.waz.zclient.core.controllers.tracking.events.media.OpenedMediaActionEvent;
+import com.waz.zclient.core.controllers.tracking.events.media.PreviewedAudioMessageEvent;
+import com.waz.zclient.core.controllers.tracking.events.media.SentPictureEvent;
+import com.waz.zclient.core.controllers.tracking.events.media.SentVideoMessageEvent;
 import com.waz.zclient.core.controllers.tracking.events.media.StartedRecordingAudioMessageEvent;
 import com.waz.zclient.core.stores.IStoreFactory;
 import com.waz.zclient.core.stores.conversation.ConversationChangeRequester;
@@ -127,6 +130,9 @@ import com.waz.zclient.core.stores.network.NetworkStoreObserver;
 import com.waz.zclient.core.stores.participants.ParticipantsStoreObserver;
 import com.waz.zclient.pages.BaseFragment;
 import com.waz.zclient.pages.extendedcursor.ExtendedCursorContainer;
+import com.waz.zclient.pages.extendedcursor.image.CursorImagesLayout;
+import com.waz.zclient.pages.extendedcursor.image.CursorImagesPreviewLayout;
+import com.waz.zclient.pages.extendedcursor.voicefilter.VoiceFilterLayout;
 import com.waz.zclient.pages.main.calling.enums.VoiceBarAppearance;
 import com.waz.zclient.pages.main.conversation.views.MessageViewsContainer;
 import com.waz.zclient.pages.main.conversation.views.TypingIndicatorView;
@@ -145,6 +151,7 @@ import com.waz.zclient.pages.main.onboarding.OnBoardingHintType;
 import com.waz.zclient.pages.main.pickuser.controller.IPickUserController;
 import com.waz.zclient.pages.main.profile.ZetaPreferencesActivity;
 import com.waz.zclient.pages.main.profile.camera.CameraContext;
+import com.waz.zclient.ui.animation.interpolators.penner.Expo;
 import com.waz.zclient.ui.audiomessage.AudioMessageRecordingView;
 import com.waz.zclient.ui.cursor.CursorCallback;
 import com.waz.zclient.ui.cursor.CursorLayout;
@@ -155,7 +162,6 @@ import com.waz.zclient.utils.AssetUtils;
 import com.waz.zclient.utils.LayoutSpec;
 import com.waz.zclient.utils.OtrDestination;
 import com.waz.zclient.utils.PermissionUtils;
-import com.waz.zclient.utils.TestingGalleryUtils;
 import com.waz.zclient.utils.TrackingUtils;
 import com.waz.zclient.utils.ViewUtils;
 import com.waz.zclient.views.LoadingIndicatorView;
@@ -192,13 +198,19 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                                                                                                   AudioMessageRecordingView.Callback,
                                                                                                   MessageActionModeObserver,
                                                                                                   RequestPermissionsObserver,
-                                                                                                  ExtendedCursorContainer.Callback {
+                                                                                                  CursorImagesPreviewLayout.Callback,
+                                                                                                  AssetIntentsManager.Callback,
+                                                                                                  PagerControllerObserver,
+                                                                                                  CursorImagesLayout.Callback,
+                                                                                                  VoiceFilterLayout.Callback, ExtendedCursorContainer.Callback {
     public static final String TAG = ConversationFragment.class.getName();
-
+    private static final String SAVED_STATE_PREVIEW = "SAVED_STATE_PREVIEW";
     private static final int REQUEST_FILE_CODE = 9412;
     private static final int REQUEST_VIDEO_CAPTURE = 911;
-    private static final String[] CAMERA_PERMISSIONS = new String[] {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static final int CAMERA_PERMISSION_REQUEST_ID = 21;
+
+    private static final String[] EXTENDED_CURSOR_PERMISSIONS = new String[] {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final int OPEN_EXTENDED_CURSOR_IMAGES = 1254;
 
     private static final String[] FILE_SHARING_PERMISSION = new String[] {android.Manifest.permission.READ_EXTERNAL_STORAGE};
     private static final int FILE_SHARING_PERMISSION_REQUEST_ID = 179;
@@ -232,6 +244,9 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     private AudioMessageRecordingView audioMessageRecordingView;
     private ExtendedCursorContainer extendedCursorContainer;
     private List<Uri> sharingUris = new ArrayList<>();
+    private AssetIntentsManager assetIntentsManager;
+    private ViewGroup containerPreview;
+    private boolean isPreviewShown;
 
     public static ConversationFragment newInstance() {
         return new ConversationFragment();
@@ -399,6 +414,11 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                                              1f);
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        assetIntentsManager = new AssetIntentsManager(getActivity(), this, savedInstanceState);
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -437,6 +457,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
         View view = inflater.inflate(R.layout.fragment_conversation, viewGroup, false);
 
         extendedCursorContainer = ViewUtils.getView(view, R.id.ecc__conversation);
+        containerPreview = ViewUtils.getView(view, R.id.fl__conversation_overlay);
         cursorLayout = ViewUtils.getView(view, R.id.cl__cursor);
         audioMessageRecordingView = ViewUtils.getView(view, R.id.amrv_audio_message_recording);
         toolbar = ViewUtils.getView(view, R.id.t_conversation_toolbar);
@@ -480,7 +501,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
 
         if (BuildConfig.SHOW_MENTIONING) {
             getChildFragmentManager().beginTransaction()
-                                     .add(R.id.fl__conversation__mentioning,
+                                     .add(R.id.fl__conversation_overlay,
                                           MentioningFragment.getInstance(),
                                           MentioningFragment.TAG)
                                      .commit();
@@ -516,8 +537,10 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
         listView.addFooterView(invisibleFooter, null, false);
 
         typingIndicatorView = new TypingIndicatorView(getActivity());
-        FrameLayout.LayoutParams typingIndicatorLayoutParams = new FrameLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.typing_indicator__chathead_size),
-                                                                                            getResources().getDimensionPixelSize(R.dimen.typing_indicator__chathead_size));
+        FrameLayout.LayoutParams typingIndicatorLayoutParams = new FrameLayout.LayoutParams(getResources().getDimensionPixelSize(
+            R.dimen.typing_indicator__chathead_size),
+                                                                                            getResources().getDimensionPixelSize(
+                                                                                                R.dimen.typing_indicator__chathead_size));
         typingIndicatorLayoutParams.gravity = Gravity.CENTER;
         typingIndicatorView.setLayoutParams(typingIndicatorLayoutParams);
         cursorLayout.getTypingIndicatorContainer().addTypingIndicatorView(typingIndicatorView);
@@ -554,6 +577,10 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
             view.setBackgroundColor(Color.WHITE);
         }
 
+        if (savedInstanceState != null) {
+            isPreviewShown = savedInstanceState.getBoolean(SAVED_STATE_PREVIEW, false);
+        }
+
         return view;
     }
 
@@ -568,7 +595,6 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
         super.onStart();
         getControllerFactory().getGlobalLayoutController().addKeyboardHeightObserver(extendedCursorContainer);
         getControllerFactory().getGlobalLayoutController().addKeyboardVisibilityObserver(extendedCursorContainer);
-        extendedCursorContainer.setCallback(this);
         getControllerFactory().getRequestPermissionsController().addObserver(this);
         cursorLayout.setCursorCallback(this);
         final String draftText = getStoreFactory().getDraftStore().getDraft(getStoreFactory().getConversationStore().getCurrentConversation());
@@ -591,6 +617,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
             getStoreFactory().getConversationStore().addConversationStoreObserver(this);
         }
         getControllerFactory().getNavigationController().addNavigationControllerObserver(this);
+        getControllerFactory().getNavigationController().addPagerControllerObserver(this);
 
         getControllerFactory().getGiphyController().addObserver(this);
         getControllerFactory().getSingleImageController().addSingleImageObserver(this);
@@ -604,9 +631,10 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
 
         getControllerFactory().getSlidingPaneController().addObserver(this);
         getControllerFactory().getMessageActionModeController().addObserver(this);
-        getStoreFactory().getNetworkStore().addNetworkControllerObserver(this);
+        getStoreFactory().getNetworkStore().addNetworkStoreObserver(this);
 
         typingIndicatorView.setSelfUser(getStoreFactory().getProfileStore().getSelfUser());
+        extendedCursorContainer.setCallback(this);
     }
 
     @Override
@@ -618,6 +646,13 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        assetIntentsManager.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_STATE_PREVIEW, isPreviewShown);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         KeyboardUtils.hideKeyboard(getActivity());
@@ -626,16 +661,16 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
 
     @Override
     public void onStop() {
+        extendedCursorContainer.close(true);
+        extendedCursorContainer.setCallback(null);
+        cursorLayout.setCursorCallback(null);
         getControllerFactory().getGlobalLayoutController().removeKeyboardHeightObserver(extendedCursorContainer);
         getControllerFactory().getGlobalLayoutController().removeKeyboardVisibilityObserver(extendedCursorContainer);
-        cursorLayout.setCursorCallback(null);
-        extendedCursorContainer.setCallback(null);
-        extendedCursorContainer.close(true);
         if (BuildConfig.SHOW_MENTIONING) {
             getControllerFactory().getMentioningController().removeObserver(this);
         }
         getControllerFactory().getGiphyController().removeObserver(this);
-        getStoreFactory().getNetworkStore().removeNetworkControllerObserver(this);
+        getStoreFactory().getNetworkStore().removeNetworkStoreObserver(this);
         getControllerFactory().getSingleImageController().removeSingleImageObserver(this);
         getStoreFactory().getDraftStore().setDraft(getStoreFactory().getConversationStore().getCurrentConversation(),
                                                    cursorLayout.getText().trim());
@@ -643,6 +678,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
         getStoreFactory().getParticipantsStore().removeParticipantsStoreObserver(this);
         getControllerFactory().getStreamMediaPlayerController().removeStreamMediaBarObserver(this);
         getControllerFactory().getGlobalLayoutController().removeKeyboardVisibilityObserver(this);
+        getControllerFactory().getNavigationController().removePagerControllerObserver(this);
 
         messagesListModelObserver.pauseListening();
         syncIndicatorModelObserver.pauseListening();
@@ -662,6 +698,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     @Override
     public void onDestroyView() {
         timestampShown.clear();
+        containerPreview = null;
         timestampShown = null;
         shownTimestampView = null;
         listView = null;
@@ -774,6 +811,10 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
             conversationModelObserver.setAndUpdate(toConversation);
         }
 
+        if (isPreviewShown) {
+            onCancelPreview();
+        }
+
         extendedCursorContainer.close(true);
 
         messageStreamManager.setConversation(toConversation,
@@ -839,7 +880,8 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                     hideAudioMessageRecording();
                 }
 
-                final boolean isSharing = getControllerFactory().getSharingController().isSharedConversation(toConversation);
+                final boolean isSharing = getControllerFactory().getSharingController().isSharedConversation(
+                    toConversation);
                 final boolean isSharingText = !TextUtils.isEmpty(getControllerFactory().getSharingController().getSharedText()) && isSharing;
                 final List<Uri> sharedFileUris = getControllerFactory().getSharingController().getSharedFileUris();
                 final boolean isSharingFiles = !(sharedFileUris == null || sharedFileUris.isEmpty()) && isSharing;
@@ -857,11 +899,14 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                     } else if (isSharingFiles) {
                         if (PermissionUtils.hasSelfPermissions(getActivity(), FILE_SHARING_PERMISSION)) {
                             for (Uri uri : sharedFileUris) {
-                                getStoreFactory().getConversationStore().sendMessage(AssetFactory.fromContentUri(uri), assetErrorHandler);
+                                getStoreFactory().getConversationStore().sendMessage(AssetFactory.fromContentUri(uri),
+                                                                                     assetErrorHandler);
                             }
                         } else {
                             sharingUris.addAll(sharedFileUris);
-                            ActivityCompat.requestPermissions(getActivity(), FILE_SHARING_PERMISSION, FILE_SHARING_PERMISSION_REQUEST_ID);
+                            ActivityCompat.requestPermissions(getActivity(),
+                                                              FILE_SHARING_PERMISSION,
+                                                              FILE_SHARING_PERMISSION_REQUEST_ID);
                         }
                         getControllerFactory().getSharingController().maybeResetSharedUris(toConversation);
                     }
@@ -1059,58 +1104,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_FILE_CODE && resultCode == Activity.RESULT_OK) {
-            if (data == null || getStoreFactory() == null || getStoreFactory().isTornDown()) {
-                return;
-            }
-            sharingUris.clear();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                sharingUris.add(Uri.parse(data.getDataString()));
-            } else {
-                sharingUris.add(data.getData());
-            }
-            if (sharingUris.size() == 0) {
-                ViewUtils.showAlertDialog(getActivity(),
-                                          R.string.asset_upload_error__not_found__title,
-                                          R.string.asset_upload_error__not_found__message,
-                                          R.string.asset_upload_error__not_found__button,
-                                          null,
-                                          true);
-            } else {
-                if (PermissionUtils.hasSelfPermissions(getActivity(), FILE_SHARING_PERMISSION)) {
-                    getStoreFactory().getConversationStore().sendMessage(AssetFactory.fromContentUri(sharingUris.get(0)), assetErrorHandler);
-                    sharingUris.clear();
-                } else {
-                    ActivityCompat.requestPermissions(getActivity(), FILE_SHARING_PERMISSION, FILE_SHARING_PERMISSION_REQUEST_ID);
-                }
-            }
-        } else if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == Activity.RESULT_OK) {
-            if (data == null || getControllerFactory() == null || getControllerFactory().isTornDown()) {
-                return;
-            }
-            final Uri uri;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                uri = Uri.parse(data.getDataString());
-            } else {
-                uri = data.getData();
-            }
-            if (uri == null) {
-                Timber.e("Unable to get video path");
-                return;
-            }
-            Timber.i("  uri.getPath %s", uri.getPath());
-            Timber.i("          uri %s", uri);
-
-            AssetForUpload assetForUpload = AssetFactory.fromContentUri(uri);
-            getStoreFactory().getConversationStore().sendMessage(assetForUpload, assetErrorHandlerVideo);
-
-            int durationAsSec = (int) (AssetUtils.getVideoAssetDurationMilliSec(getContext(), uri) / 1000);
-            getControllerFactory().getTrackingController().tagEvent(new SentVideoMessageEvent(durationAsSec,
-                                                                                              getConversationTypeString()));
-
-            getControllerFactory().getNavigationController().setRightPage(Page.MESSAGE_STREAM, TAG);
-            getStoreFactory().getInAppNotificationStore().setUserSendingPicture(false);
-        }
+        assetIntentsManager.onActivityResult(requestCode, resultCode, data);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -1373,7 +1367,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     }
 
     @Override
-    public void onConnectivityChange(boolean hasInternet) {
+    public void onConnectivityChange(boolean hasInternet, boolean isServerError) {
         if (cursorLayout == null) {
             return;
         }
@@ -1381,7 +1375,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     }
 
     @Override
-    public void onNetworkAccessFailed() {
+    public void onNoInternetConnection(boolean isServerError) {
 
     }
 
@@ -1492,18 +1486,32 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                 if (PermissionUtils.hasSelfPermissions(getActivity(), AUDIO_PERMISSION)) {
                     openExtendedCursor(ExtendedCursorContainer.Type.VOICE_FILTER_RECORDING);
                 } else {
-                    ActivityCompat.requestPermissions(getActivity(), AUDIO_PERMISSION, AUDIO_FILTER_PERMISSION_REQUEST_ID);
+                    ActivityCompat.requestPermissions(getActivity(),
+                                                      AUDIO_PERMISSION,
+                                                      AUDIO_FILTER_PERMISSION_REQUEST_ID);
                 }
                 break;
             case CAMERA:
-                KeyboardUtils.closeKeyboardIfShown(getActivity());
-                getControllerFactory().getCameraController().openCamera(CameraContext.MESSAGE);
-                getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.photo(isGroupConversation));
+                if (LayoutSpec.isTablet(getContext())) {
+                    KeyboardUtils.closeKeyboardIfShown(getActivity());
+                    getControllerFactory().getCameraController().openCamera(CameraContext.MESSAGE);
+                    getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.photo(
+                        isGroupConversation));
+                } else {
+
+                    if (PermissionUtils.hasSelfPermissions(getContext(), EXTENDED_CURSOR_PERMISSIONS)) {
+                        openExtendedCursor(ExtendedCursorContainer.Type.IMAGES);
+                    } else {
+                        ActivityCompat.requestPermissions(getActivity(),
+                                                          EXTENDED_CURSOR_PERMISSIONS,
+                                                          OPEN_EXTENDED_CURSOR_IMAGES);
+                    }
+                }
                 break;
             case PING:
-                getStoreFactory().getNetworkStore().doIfNetwork(new DefaultNetworkAction() {
+                getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(new DefaultNetworkAction() {
                     @Override
-                    public void execute() {
+                    public void execute(NetworkMode networkMode) {
                         getStoreFactory().getConversationStore().knockCurrentConversation();
                         getStoreFactory().getMediaStore().playSound(R.raw.ping_from_me);
                         getControllerFactory().getTrackingController().updateSessionAggregates(RangedAttribute.PINGS_SENT);
@@ -1513,44 +1521,20 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                                                 getStoreFactory().getConversationStore().getCurrentConversation());
                 break;
             case SKETCH:
-                getControllerFactory().getDrawingController().showDrawing(null, IDrawingController.DrawingDestination.SKETCH_BUTTON);
-                getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.sketch(isGroupConversation));
+                getControllerFactory().getDrawingController().showDrawing(null,
+                                                                          IDrawingController.DrawingDestination.SKETCH_BUTTON);
+                getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.sketch(
+                    isGroupConversation));
                 break;
             case FILE:
-                Intent intent = new Intent();
-                if (BuildConfig.IS_TEST_GALLERY_ALLOWED &&
-                    TestingGalleryUtils.isCustomGalleryInstalled(getActivity().getPackageManager())) {
-                    intent = new Intent("com.wire.testing.GET_DOCUMENT");
-                    intent.addCategory(Intent.CATEGORY_DEFAULT);
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                } else {
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                }
-                intent.setType("*/*");
+                assetIntentsManager.maybeOpenFileSharing();
                 getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.file(isGroupConversation));
-                startActivityForResult(intent, REQUEST_FILE_CODE);
                 break;
             case VIDEO_MESSAGE:
-                if (PermissionUtils.hasSelfPermissions(getActivity(), CAMERA_PERMISSIONS)) {
-                    getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.videomessage(
-                        isGroupConversation));
-                    if (BuildConfig.IS_TEST_GALLERY_ALLOWED &&
-                        TestingGalleryUtils.isCustomGalleryInstalled(getActivity().getPackageManager())) {
-                        Intent testVideoIntent = new Intent("com.wire.testing.GET_VIDEO");
-                        testVideoIntent.addCategory(Intent.CATEGORY_DEFAULT);
-                        testVideoIntent.setType("video/*");
-                        startActivityForResult(testVideoIntent, REQUEST_VIDEO_CAPTURE);
-                    } else {
-                        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                        }
-                        startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-                    }
-                } else {
-                    ActivityCompat.requestPermissions(getActivity(), CAMERA_PERMISSIONS, CAMERA_PERMISSION_REQUEST_ID);
-                }
+                getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.videomessage(
+                    isGroupConversation));
+                extendedCursorContainer.close(false);
+                assetIntentsManager.maybeOpenVideo(getActivity(), AssetIntentsManager.IntentType.VIDEO_CURSOR_BUTTON);
                 break;
             case LOCATION:
                 getControllerFactory().getLocationController().showShareLocation();
@@ -1558,6 +1542,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                     isGroupConversation));
                 break;
             case MORE:
+            case LESS:
                 getControllerFactory().getTrackingController().tagEvent(new OpenedMoreActionsEvent(
                     getConversationTypeString()));
                 break;
@@ -1565,9 +1550,22 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     }
 
     private void openExtendedCursor(ExtendedCursorContainer.Type type) {
-        extendedCursorContainer.openWithType(type);
+
         final boolean isGroupConversation = getConversationType() == IConversation.Type.GROUP;
-        getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.audiomessage(isGroupConversation));
+        switch (type) {
+            case NONE:
+                break;
+            case VOICE_FILTER_RECORDING:
+                extendedCursorContainer.openVoiceFilter(this);
+                getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.audiomessage(
+                    isGroupConversation));
+                break;
+            case IMAGES:
+                extendedCursorContainer.openCursorImages(this);
+                getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.photo(
+                    isGroupConversation));
+                break;
+        }
     }
 
     @Override
@@ -1584,8 +1582,11 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                     audioMessageRecordingView.setVisibility(View.VISIBLE);
                     final IConversation conversation = getStoreFactory().getConversationStore().getCurrentConversation();
                     final boolean isGroupConversation = conversation.getType() == IConversation.Type.GROUP;
-                    getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.audiomessage(isGroupConversation));
-                    getControllerFactory().getTrackingController().tagEvent(new StartedRecordingAudioMessageEvent(getConversationTypeString(), true));
+                    getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.audiomessage(
+                        isGroupConversation));
+                    getControllerFactory().getTrackingController().tagEvent(new StartedRecordingAudioMessageEvent(
+                        getConversationTypeString(),
+                        true));
                 } else {
                     ActivityCompat.requestPermissions(getActivity(), AUDIO_PERMISSION, AUDIO_PERMISSION_REQUEST_ID);
                 }
@@ -1617,9 +1618,7 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
             TrackingUtils.onSentTextMessage(getControllerFactory().getTrackingController(),
                                             getStoreFactory().getConversationStore().getCurrentConversation());
 
-            if (!getStoreFactory().getNetworkStore().hasInternetConnection()) {
-                getStoreFactory().getNetworkStore().notifyNetworkAccessFailed();
-            }
+            getStoreFactory().getNetworkStore().doIfHasInternetOrNotifyUser(null);
             getControllerFactory().getTrackingController().updateSessionAggregates(RangedAttribute.TEXT_MESSAGES_SENT,
                                                                                    message);
         }
@@ -1669,6 +1668,16 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
 
     @Override
     public boolean onBackPressed() {
+        if (isPreviewShown) {
+            onCancelPreview();
+            return true;
+        }
+
+        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+            getChildFragmentManager().popBackStack();
+            return true;
+        }
+
         if (extendedCursorContainer.isExpanded()) {
             extendedCursorContainer.close(false);
             return true;
@@ -1694,7 +1703,8 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     @Override
     public void onMessageSelected(Message message) {
         boolean multipleMessagesSelected = getControllerFactory().getMessageActionModeController().getSelectedMessages().size() > 1;
-        getControllerFactory().getTrackingController().tagEvent(new SelectedMessageEvent(TrackingUtils.messageTypeForMessageSelection(message.getMessageType()),
+        getControllerFactory().getTrackingController().tagEvent(new SelectedMessageEvent(TrackingUtils.messageTypeForMessageSelection(
+            message.getMessageType()),
                                                                                          multipleMessagesSelected,
                                                                                          getConversationTypeString()));
     }
@@ -1720,11 +1730,18 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
 
     @Override
     public void onRequestPermissionsResult(int requestCode, int[] grantResults) {
+        if (assetIntentsManager.onRequestPermissionsResult(requestCode, grantResults)) {
+            return;
+        }
+
         switch (requestCode) {
+            case OPEN_EXTENDED_CURSOR_IMAGES:
+                if (PermissionUtils.verifyPermissions(grantResults)) {
+                    openExtendedCursor(ExtendedCursorContainer.Type.IMAGES);
+                }
+                break;
             case CAMERA_PERMISSION_REQUEST_ID:
                 if (PermissionUtils.verifyPermissions(grantResults)) {
-                    boolean isGroupConversation = getStoreFactory().getConversationStore().getCurrentConversation().getType() == IConversation.Type.GROUP;
-                    getControllerFactory().getTrackingController().tagEvent(OpenedMediaActionEvent.videomessage(isGroupConversation));
                     Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
@@ -1737,7 +1754,8 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
             case FILE_SHARING_PERMISSION_REQUEST_ID:
                 if (PermissionUtils.verifyPermissions(grantResults)) {
                     for (Uri uri : sharingUris) {
-                        getStoreFactory().getConversationStore().sendMessage(AssetFactory.fromContentUri(uri), assetErrorHandler);
+                        getStoreFactory().getConversationStore().sendMessage(AssetFactory.fromContentUri(uri),
+                                                                             assetErrorHandler);
                     }
                     sharingUris.clear();
                 } else {
@@ -1757,7 +1775,9 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                 if (PermissionUtils.verifyPermissions(grantResults)) {
                     openExtendedCursor(ExtendedCursorContainer.Type.VOICE_FILTER_RECORDING);
                 } else {
-                    Toast.makeText(getActivity(), R.string.audio_message_error__missing_audio_permissions, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),
+                                   R.string.audio_message_error__missing_audio_permissions,
+                                   Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
@@ -1767,11 +1787,15 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     }
 
     private void onCameraPermissionsFailed() {
-        Toast.makeText(getActivity(), R.string.video_message_error__missing_camera_permissions, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(),
+                       R.string.video_message_error__missing_camera_permissions,
+                       Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onSendAudioMessage(AudioAssetForUpload audioAssetForUpload, AudioEffect appliedAudioEffect, boolean sentWithQuickAction) {
+    public void onSendAudioMessage(AudioAssetForUpload audioAssetForUpload,
+                                   AudioEffect appliedAudioEffect,
+                                   boolean sentWithQuickAction) {
         getStoreFactory().getConversationStore().sendMessage(audioAssetForUpload, assetErrorHandler);
         hideAudioMessageRecording();
         TrackingUtils.tagSentAudioMessageEvent(getControllerFactory().getTrackingController(),
@@ -1783,7 +1807,19 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
     }
 
     @Override
-    public void onSendAudioMessage(AudioAssetForUpload audioAssetForUpload, AudioEffect appliedAudioEffect) {
+    public void onCancel() {
+        extendedCursorContainer.close(false);
+    }
+
+    @Override
+    public void onAudioMessageRecordingStarted() {
+        getControllerFactory().getTrackingController().tagEvent(new StartedRecordingAudioMessageEvent(
+            getConversationTypeString(),
+            false));
+    }
+
+    @Override
+    public void sendRecording(AudioAssetForUpload audioAssetForUpload, AudioEffect appliedAudioEffect) {
         getStoreFactory().getConversationStore().sendMessage(audioAssetForUpload, assetErrorHandler);
         hideAudioMessageRecording();
         TrackingUtils.tagSentAudioMessageEvent(getControllerFactory().getTrackingController(),
@@ -1792,11 +1828,8 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                                                false,
                                                false,
                                                getConversationTypeString());
-    }
+        extendedCursorContainer.close(true);
 
-    @Override
-    public void onAudioMessageRecordingStarted() {
-        getControllerFactory().getTrackingController().tagEvent(new StartedRecordingAudioMessageEvent(getConversationTypeString(), false));
     }
 
     @Override
@@ -1918,6 +1951,216 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
         return getConversationType() != null ? getConversationType().name() : "";
     }
 
+    @Override
+    public void openCamera() {
+        getControllerFactory().getCameraController().openCamera(CameraContext.MESSAGE);
+    }
+
+    @Override
+    public void openVideo() {
+        assetIntentsManager.maybeOpenVideo(getActivity(), AssetIntentsManager.IntentType.VIDEO);
+    }
+
+    @Override
+    public void openGallery() {
+        assetIntentsManager.openGallery(getActivity());
+    }
+
+    @Override
+    public void onPictureTaken(ImageAsset imageAsset) {
+        showImagePreview(imageAsset, CursorImagesPreviewLayout.Source.CAMERA);
+    }
+
+    @Override
+    public void onGalleryPictureSelected(ImageAsset asset) {
+        isPreviewShown = true;
+        showImagePreview(asset, CursorImagesPreviewLayout.Source.IN_APP_GALLERY);
+    }
+
+    private void showImagePreview(ImageAsset asset, CursorImagesPreviewLayout.Source source) {
+        CursorImagesPreviewLayout cursorImagesPreviewLayout = createPreviewLayout();
+        cursorImagesPreviewLayout.setImageAsset(asset,
+                                                source,
+                                                this,
+                                                getControllerFactory().getAccentColorController().getAccentColor().getColor(),
+                                                getStoreFactory().getConversationStore().getCurrentConversation().getName());
+
+
+        containerPreview.addView(cursorImagesPreviewLayout);
+        openPreview(containerPreview);
+    }
+
+    private CursorImagesPreviewLayout createPreviewLayout() {
+        return (CursorImagesPreviewLayout) LayoutInflater.from(getContext()).inflate(
+            R.layout.fragment_cursor_images_preview,
+            containerPreview,
+            false);
+    }
+
+    private void openPreview(View containerPreview) {
+        isPreviewShown = true;
+        getControllerFactory().getNavigationController().setPagerEnabled(false);
+        containerPreview.setTranslationY(getView().getMeasuredHeight());
+        containerPreview
+            .animate()
+            .translationY(0)
+            .setDuration(getResources().getInteger(R.integer.animation_duration_medium))
+            .setInterpolator(new Expo.EaseOut());
+    }
+
+    @Override
+    public void onCancelPreview() {
+        isPreviewShown = false;
+        getControllerFactory().getNavigationController().setPagerEnabled(true);
+        containerPreview
+            .animate()
+            .translationY(getView().getMeasuredHeight())
+            .setDuration(getResources().getInteger(R.integer.animation_duration_medium))
+            .setInterpolator(new Expo.EaseIn())
+            .withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    if (containerPreview != null) {
+                        containerPreview.removeAllViews();
+                    }
+                }
+            });
+    }
+
+    @Override
+    public void onSketchPictureFromPreview(ImageAsset imageAsset, CursorImagesPreviewLayout.Source source) {
+        getControllerFactory().getDrawingController().showDrawing(imageAsset,
+                                                                  IDrawingController.DrawingDestination.CAMERA_PREVIEW_VIEW);
+        extendedCursorContainer.close(true);
+    }
+
+    @Override
+    public void onSendPictureFromPreview(ImageAsset imageAsset, CursorImagesPreviewLayout.Source source) {
+        getStoreFactory().getConversationStore().sendMessage(imageAsset);
+        TrackingUtils.onSentPhotoMessage(getControllerFactory().getTrackingController(),
+                                         getStoreFactory().getConversationStore().getCurrentConversation(),
+                                         source);
+        extendedCursorContainer.close(true);
+
+        onCancelPreview();
+    }
+
+    @Override
+    public void onDataReceived(AssetIntentsManager.IntentType type, Uri uri) {
+        switch (type) {
+            case FILE_SHARING:
+                sharingUris.clear();
+                if (PermissionUtils.hasSelfPermissions(getActivity(), FILE_SHARING_PERMISSION)) {
+                    getStoreFactory().getConversationStore().sendMessage(AssetFactory.fromContentUri(uri),
+                                                                         assetErrorHandler);
+                } else {
+                    sharingUris.add(uri);
+                    ActivityCompat.requestPermissions(getActivity(),
+                                                      FILE_SHARING_PERMISSION,
+                                                      FILE_SHARING_PERMISSION_REQUEST_ID);
+                }
+                break;
+            case GALLERY:
+                showImagePreview(ImageAssetFactory.getImageAsset(uri),
+                                 CursorImagesPreviewLayout.Source.DEVICE_GALLERY);
+                break;
+            case VIDEO_CURSOR_BUTTON:
+                sendVideo(uri);
+                getControllerFactory().getTrackingController().tagEvent(new SentVideoMessageEvent((int) (AssetUtils.getVideoAssetDurationMilliSec(
+                    getContext(),
+                    uri) / 1000),
+                                                                                                  getConversationTypeString(),
+                                                                                                  SentVideoMessageEvent.Source.CURSOR_BUTTON));
+                break;
+            case VIDEO:
+                sendVideo(uri);
+                getControllerFactory().getTrackingController().tagEvent(new SentVideoMessageEvent((int) (AssetUtils.getVideoAssetDurationMilliSec(
+                    getContext(),
+                    uri) / 1000),
+                                                                                                  getConversationTypeString(),
+                                                                                                  SentVideoMessageEvent.Source.KEYBOARD));
+                break;
+            case CAMERA:
+                sendImage(uri);
+                TrackingUtils.onSentPhotoMessage(getControllerFactory().getTrackingController(),
+                                                 getStoreFactory().getConversationStore().getCurrentConversation(),
+                                                 SentPictureEvent.Source.CAMERA,
+                                                 SentPictureEvent.Method.FULL_SCREEN);
+                extendedCursorContainer.close(true);
+                break;
+        }
+    }
+
+    private void sendVideo(Uri uri) {
+        Timber.i("  uri.getPath %s", uri.getPath());
+        Timber.i("          uri %s", uri);
+
+        AssetForUpload assetForUpload = AssetFactory.fromContentUri(uri);
+        getStoreFactory().getConversationStore().sendMessage(assetForUpload, assetErrorHandlerVideo);
+
+        getControllerFactory().getNavigationController().setRightPage(Page.MESSAGE_STREAM, TAG);
+        getStoreFactory().getInAppNotificationStore().setUserSendingPicture(false);
+        extendedCursorContainer.close(true);
+    }
+
+    private void sendImage(Uri uri) {
+        ImageAsset imageAsset = ImageAssetFactory.getImageAsset(uri);
+
+        getStoreFactory().getConversationStore().sendMessage(imageAsset);
+    }
+
+    @Override
+    public void onCanceled(AssetIntentsManager.IntentType type) {
+    }
+
+    @Override
+    public void onFailed(AssetIntentsManager.IntentType type) {
+    }
+
+    @Override
+    public void openIntent(Intent intent, AssetIntentsManager.IntentType intentType) {
+        if (intent.getAction() == MediaStore.ACTION_VIDEO_CAPTURE &&
+            extendedCursorContainer.getType() == ExtendedCursorContainer.Type.IMAGES &&
+            extendedCursorContainer.isExpanded()) {
+            // Close keyboard camera before requesting external camera for recording video
+            extendedCursorContainer.close(true);
+        }
+        startActivityForResult(intent, intentType.requestCode);
+        getActivity().overridePendingTransition(R.anim.camera_in, R.anim.camera_out);
+    }
+
+    @Override
+    public void onPermissionFailed(AssetIntentsManager.IntentType type) {
+
+    }
+
+    @Override
+    public void onPagerEnabledStateHasChanged(boolean enabled) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        if (positionOffset > 0) {
+            extendedCursorContainer.close(true);
+        }
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public void onExtendedCursorClosed() {
+        cursorLayout.onExtendedCursorClosed();
+    }
+
     public interface Container {
         void onOpenUrl(String url);
     }
@@ -1931,7 +2174,9 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
         private MenuItem fwdItem;
         private AlertDialog dialog;
 
-        ToolbarActionModeCallback(Activity activity, IMessageActionModeController actionModeController, ITrackingController trackingController) {
+        ToolbarActionModeCallback(Activity activity,
+                                  IMessageActionModeController actionModeController,
+                                  ITrackingController trackingController) {
             this.activity = activity;
             this.actionModeController = actionModeController;
             this.trackingController = trackingController;
@@ -1969,9 +2214,13 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                     // Copy is just supported for one message
                     message = actionModeController.getSelectedMessages().iterator().next();
                     ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText(activity.getString(R.string.conversation__action_mode__copy__description, message.getUser().getDisplayName()), message.getBody());
+                    ClipData clip = ClipData.newPlainText(activity.getString(R.string.conversation__action_mode__copy__description,
+                                                                             message.getUser().getDisplayName()),
+                                                          message.getBody());
                     clipboard.setPrimaryClip(clip);
-                    Toast.makeText(activity, R.string.conversation__action_mode__copy__toast, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity,
+                                   R.string.conversation__action_mode__copy__toast,
+                                   Toast.LENGTH_SHORT).show();
 
                     trackingController.tagEvent(OpenedMessageActionEvent.copy());
                     trackingController.tagEvent(new CopiedMessageEvent());
@@ -1981,33 +2230,37 @@ public class ConversationFragment extends BaseFragment<ConversationFragment.Cont
                 case R.id.action_delete:
                     final int messageCount = actionModeController.getSelectedMessages().size();
                     dialog = new AlertDialog.Builder(activity)
-                                   .setTitle(activity.getResources().getQuantityString(R.plurals.conversation__action_mode__delete__dialog__title, messageCount))
-                                   .setMessage(activity.getResources().getQuantityString(R.plurals.conversation__action_mode__delete__dialog__message, messageCount))
-                                   .setCancelable(true)
-                                   .setNegativeButton(R.string.conversation__action_mode__delete__dialog__cancel, null)
-                                   .setPositiveButton(R.string.conversation__action_mode__delete__dialog__ok, new DialogInterface.OnClickListener() {
-                                       @Override
-                                       public void onClick(DialogInterface dialog, int which) {
-                                           if (mode == null ||
-                                               trackingController == null ||
-                                               actionModeController == null ||
-                                               actionModeController.getSelectedMessages() == null) {
-                                               return;
-                                           }
+                        .setTitle(activity.getResources().getQuantityString(R.plurals.conversation__action_mode__delete__dialog__title,
+                                                                            messageCount))
+                        .setMessage(activity.getResources().getQuantityString(R.plurals.conversation__action_mode__delete__dialog__message,
+                                                                              messageCount))
+                        .setCancelable(true)
+                        .setNegativeButton(R.string.conversation__action_mode__delete__dialog__cancel, null)
+                        .setPositiveButton(R.string.conversation__action_mode__delete__dialog__ok,
+                                           new DialogInterface.OnClickListener() {
+                                               @Override
+                                               public void onClick(DialogInterface dialog, int which) {
+                                                   if (mode == null ||
+                                                       trackingController == null ||
+                                                       actionModeController == null ||
+                                                       actionModeController.getSelectedMessages() == null) {
+                                                       return;
+                                                   }
 
-                                           for (Message message : actionModeController.getSelectedMessages()) {
-                                               message.delete();
-                                           }
+                                                   for (Message message : actionModeController.getSelectedMessages()) {
+                                                       message.delete();
+                                                   }
 
-                                           trackingController.tagEvent(OpenedMessageActionEvent.delete());
-                                           boolean multipleMessagesSelected = actionModeController.getSelectedMessages().size() > 1;
-                                           trackingController.tagEvent(new DeletedMessageEvent(multipleMessagesSelected));
+                                                   trackingController.tagEvent(OpenedMessageActionEvent.delete());
+                                                   boolean multipleMessagesSelected = actionModeController.getSelectedMessages().size() > 1;
+                                                   trackingController.tagEvent(new DeletedMessageEvent(
+                                                       multipleMessagesSelected));
 
-                                           mode.finish();
+                                                   mode.finish();
 
-                                       }
-                                   })
-                                   .create();
+                                               }
+                                           })
+                        .create();
                     dialog.show();
                     break;
                 case R.id.action_fwd:

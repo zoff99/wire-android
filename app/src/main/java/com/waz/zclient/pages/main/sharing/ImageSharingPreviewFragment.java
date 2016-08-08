@@ -32,6 +32,7 @@ import com.waz.zclient.controllers.sharing.SharedContentType;
 import com.waz.zclient.pages.BaseFragment;
 import com.waz.zclient.ui.utils.TextViewUtils;
 import com.waz.zclient.ui.views.ZetaButton;
+import com.waz.zclient.utils.TrackingUtils;
 import com.waz.zclient.utils.ViewUtils;
 import com.waz.zclient.views.images.ImageAssetView;
 
@@ -162,6 +163,8 @@ public class ImageSharingPreviewFragment extends BaseFragment<ImageSharingPrevie
         switch (sharedContentType) {
             case IMAGE:
                 getStoreFactory().getConversationStore().sendMessage(destination, ImageAssetFactory.getImageAsset(sharedImageUris.get(0)));
+                TrackingUtils.onSentPhotoMessageFromSharing(getControllerFactory().getTrackingController(),
+                                                            destination);
                 break;
         }
         getControllerFactory().getSharingController().onContentShared(getActivity(), destination);
