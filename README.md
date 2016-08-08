@@ -16,7 +16,7 @@ For clarity, if you compile the open source software that we make available from
 
 No license is granted to the Wire trademark and its associated logos, all of which will continue to be owned exclusively by Wire Swiss GmbH. Any use of the Wire trademark and/or its associated logos is expressly prohibited without the express prior written consent of Wire Swiss GmbH.
 
-# How to build the open source client
+# Wire for Android
 
 ## What is included in the open source client
 
@@ -41,3 +41,5 @@ These steps will build only the Wire client UI, pulling in all other Wire framew
 - [generic-message-proto](https://github.com/wireapp/generic-message-proto)
 - [wiretranslations-android](https://github.com/wireapp/wiretranslations-android)
 
+## Android Studio
+When importing project in Android Studio **do not allow** gradle plugin update. Our build setup requires Android Plugin for Gradle version 1.5. 
